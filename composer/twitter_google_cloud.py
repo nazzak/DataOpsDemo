@@ -13,6 +13,7 @@ from airflow.models import Variable
 #from google.cloud import storage
 import json
 from time import time
+import os
 
 default_args = {
     'start_date': datetime(2020, 3, 15),
@@ -39,7 +40,7 @@ load_raw_data = dataflow_operator.DataFlowPythonOperator(
     #py_file='dataflow/twitter-google-dataflow.py',
     job_name='twitter-google-dataflow-{{ ds }}',
     dataflow_default_options={'project':'{{ var.value.GCP_PROJECT }}', 'region': 'europe-west1','zone':'europe-west6-a','runner':'DataflowRunner'},
-    options={'job_date':'{{ ds }}', 'twitter_bucket':'{{ var.value.TWITTER_BUCKET }}', 'dataflow_bucket':'{{ var.value.DATAFLOW_BUCKET }}'}
+    options={'job_date':'{{ ds }}', 'twitter_bucket':os.environ.get('TWITTER_BUCKET'), 'dataflow_bucket':os.environ.get('DATAFLOW_BUCKET')}
 )
 
 #delete_sl_partition = bigquery_operator.BigQueryOperator( # TODO change to bq command line
