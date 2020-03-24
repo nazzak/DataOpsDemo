@@ -55,9 +55,9 @@ def run():
 
 if __name__ == '__main__':
    parser = argparse.ArgumentParser()
-   parser.add_argument('--job_date')
-   parser.add_argument('--twitter_bucket')
-   parser.add_argument('--dataflow_bucket')
+   parser.add_argument('--job_date', required=True)
+   parser.add_argument('--twitter_bucket', required=True)
+   parser.add_argument('--dataflow_bucket', required=True)
    known_args, pipeline_args = parser.parse_known_args()
    #print(known_args)
    #print(pipeline_args)
