@@ -39,7 +39,7 @@ load_raw_data = dataflow_operator.DataFlowPythonOperator(
     py_file='/home/airflow/gcs/dags/dataflow/twitter-google-dataflow.py',
     #py_file='dataflow/twitter-google-dataflow.py',
     job_name='twitter-google-dataflow-{{ ds }}',
-    dataflow_default_options={'project':'{{ var.value.GCP_PROJECT }}', 'region': 'europe-west1','zone':'europe-west6-a','runner':'DataflowRunner'},
+    dataflow_default_options={'project':os.environ.get('GCP_PROJECT'), 'region': 'europe-west1','zone':'europe-west6-a','runner':'DataflowRunner'},
     options={'job_date':'{{ ds }}', 'twitter_bucket':os.environ.get('TWITTER_BUCKET'), 'dataflow_bucket':os.environ.get('DATAFLOW_BUCKET')}
 )
 
