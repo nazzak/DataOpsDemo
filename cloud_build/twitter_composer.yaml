@@ -1,0 +1,13 @@
+steps:
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'dataops_demo/composer/twitter_google_cloud.py', 'gs://${_GCS_COMPOSER_FOLDER}/dags/twitter_google_cloud.py']
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'dataops_demo/dataflow/twitter-google-dataflow.py', 'gs://${_GCS_COMPOSER_FOLDER}/dags/dataflow/twitter-google-dataflow.py']
+- name: bash
+  args: ['sleep', '20']
+#- name: gcr.io/$PROJECT_ID/airflow
+#  args: ['sleep', '20']
+- name: gcr.io/cloud-builders/gcloud
+  args: ['composer', 'environments', 'run', 'composer-dev', '--location', '${_GCS_COMPOSER_REGION}', 'list_dags']
+- name: gcr.io/cloud-builders/gcloud
+  args: ['composer', 'environments', 'run', 'composer-dev', '--location', '${_GCS_COMPOSER_REGION}', 'trigger_dag', '--', 'twitter_search']
