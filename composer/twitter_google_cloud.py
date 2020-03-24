@@ -39,7 +39,7 @@ load_raw_data = dataflow_operator.DataFlowPythonOperator(
     #py_file='dataflow/twitter-google-dataflow.py',
     job_name='twitter-google-dataflow-{{ ds }}',
     dataflow_default_options={'project':'{{ var.value.GCP_PROJECT }}', 'region': 'europe-west1','zone':'europe-west6-a','runner':'DataflowRunner'},
-    options={'job_date':'{{ ds }}', 'twitter_bucket':'{{ var.value.twitter_bucket }}', 'dataflow_bucket':'{{ var.value.dataflow_bucket }}'}
+    options={'job_date':'{{ ds }}', 'twitter_bucket':'{{ var.value.TWITTER_BUCKET }}', 'dataflow_bucket':'{{ var.value.DATAFLOW_BUCKET }}'}
 )
 
 #delete_sl_partition = bigquery_operator.BigQueryOperator( # TODO change to bq command line
