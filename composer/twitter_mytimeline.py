@@ -17,7 +17,7 @@ import os
 
 default_args = {
     'start_date': airflow.utils.dates.days_ago(0),
-    'schedule_interval': '5 */4 * * *',
+    'schedule_interval': '@hourly',
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
     'depends_on_past': False,
@@ -61,7 +61,7 @@ twitter_python = python_operator.PythonOperator(
 copy_file = gcs_to_gcs.GoogleCloudStorageToGoogleCloudStorageOperator(
     task_id='copy_from_gcs_to_gcs',
     dag=dag,
-    source_bucket='{{ var.value.GCS_BUCKET }}',
+    source_bucket='{{ var.value.v_composer_bucket }}',
     source_object="data/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}",  # hint get the return value to the XCOM from the twitter_search_task_id
     destination_bucket='temporary_python_data',
     destination_object="twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}",
