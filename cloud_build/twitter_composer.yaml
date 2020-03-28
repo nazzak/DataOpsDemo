@@ -2,6 +2,8 @@ steps:
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'composer/twitter_google_cloud.py', 'gs://${_GCS_COMPOSER_FOLDER}/dags/twitter_google_cloud.py']
 - name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'composer/twitter_mytimeline.py', 'gs://${_GCS_COMPOSER_FOLDER}/dags/twitter_mytimeline.py']
+- name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'dataflow/twitter-google-dataflow.py', 'gs://${_GCS_COMPOSER_FOLDER}/dags/dataflow/twitter-google-dataflow.py']
 - name: bash
   args: ['sleep', '20']
