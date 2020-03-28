@@ -36,7 +36,7 @@ def twitter_mytimeline(**kwargs):
     mytimeline = api.GetHomeTimeline(count=200, since_id=since_id)
     filename = 'tweets_' + str(time()) + '.json'
     with open('/home/airflow/gcs/data/mytimeline/' + filename, 'w+') as outfile: # hint local /home/airflow/gcs/data/ is bi-directional sync with the bucket / data
-        for tweet in search:
+        for tweet in mytimeline:
             json.dump(tweet._json, outfile)
             outfile.write('\n')
             if since_id < tweet.id:
