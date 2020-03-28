@@ -34,7 +34,6 @@ def twitter_mytimeline(**kwargs):
     access_token_secret = Variable.get("v_twitter_ats")
     api = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret, access_token_key=access_token_key, access_token_secret=access_token_secret)
     mytimeline = api.GetHomeTimeline(count=200, since_id=since_id)
-    storage_client = storage.Client()
     filename = 'tweets_' + str(time()) + '.json'
     with open('/home/airflow/gcs/data/mytimeline/' + filename, 'w+') as outfile: # hint local /home/airflow/gcs/data/ is bi-directional sync with the bucket / data
         for tweet in search:
