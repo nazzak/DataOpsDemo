@@ -46,6 +46,7 @@ def twitter_mytimeline(**kwargs):
             data['user_name'] = tweet.user.name
             data['user_screen_name'] = tweet.user.screen_name
             data['user_location'] = tweet.user.location
+            data['retweeted'] = tweet.retweeted
             json.dump(data, outfile)
             outfile.write('\n')
             if since_id < tweet.id:
@@ -77,10 +78,10 @@ copy_file = gcs_to_gcs.GoogleCloudStorageToGoogleCloudStorageOperator(
     move_object=True,
 )
 
-delete_sl_partition = bash_operator.BashOperator(
-    task_id='delete_sl_partition',
+load_data_to_bq = bash_operator.BashOperator(
+    task_id='load_data_to_bq',
     dag=dag,
-    bash_command='''bq rm -f -t 'dataops_demo_sl_dev.t_twitter_mytimeline${{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m%d") }}' ''',
+    bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --autodetect dataops_demo_sl_dev.t_twitter_mytimeline gs://{{ var.value.v_twitter_temp_bucket }}/twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
 )
 
-twitter_python >> copy_file >> delete_sl_partition
+twitter_python >> copy_file >> load_data_to_bq
