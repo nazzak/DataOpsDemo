@@ -6,7 +6,7 @@ from airflow.contrib.operators import gcs_to_gcs
 #from airflow.contrib.operators import ssh_operator #sshtunnel, paramiko
 from airflow.contrib.operators import bigquery_operator
 #from airflow.contrib.operators import dataflow_operator
-#from airflow.operators import bash_operator
+from airflow.operators import bash_operator
 from datetime import datetime, timedelta
 from airflow.models import Variable
 import twitter # library installed directly into the environment via the pypi tab
