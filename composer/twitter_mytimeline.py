@@ -43,6 +43,9 @@ def twitter_mytimeline(**kwargs):
             data['text'] = tweet.text
             data['truncated'] = tweet.truncated
             data['lang'] = tweet.lang
+            data['user_name'] = tweet.user.name
+            data['user_screen_name'] = tweet.user.screen_name
+            data['user_location'] = tweet.user.location
             json.dump(data, outfile)
             outfile.write('\n')
             if since_id < tweet.id:
