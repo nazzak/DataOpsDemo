@@ -17,7 +17,7 @@ import os
 
 default_args = {
     'start_date': airflow.utils.dates.days_ago(0),
-    'schedule_interval': '@hourly',
+    'schedule_interval': '0 */4 * * *',
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
     'depends_on_past': False,
