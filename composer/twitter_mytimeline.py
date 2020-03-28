@@ -37,7 +37,13 @@ def twitter_mytimeline(**kwargs):
     filename = 'tweets_' + str(time()) + '.json'
     with open('/home/airflow/gcs/data/mytimeline/' + filename, 'w+') as outfile: # hint local /home/airflow/gcs/data/ is bi-directional sync with the bucket / data
         for tweet in mytimeline:
-            json.dump(tweet._json, outfile)
+            data = {}
+            data['created_at'] = tweet.created_at
+            data['id_str'] = tweet.id_str
+            data['text'] = tweet.text
+            data['truncated'] = tweet.truncated
+            data['lang'] = tweet.lang
+            json.dump(data, outfile)
             outfile.write('\n')
             if since_id < tweet.id:
                 since_id = tweet.id
@@ -63,7 +69,7 @@ copy_file = gcs_to_gcs.GoogleCloudStorageToGoogleCloudStorageOperator(
     dag=dag,
     source_bucket='{{ var.value.v_composer_bucket }}',
     source_object="data/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}",  # hint get the return value to the XCOM from the twitter_search_task_id
-    destination_bucket='temporary_python_data',
+    destination_bucket='{{ var.value.v_twitter_temp_bucket }}',
     destination_object="twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}",
     move_object=True,
 )
