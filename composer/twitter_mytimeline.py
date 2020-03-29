@@ -16,8 +16,8 @@ from time import time
 import os
 
 default_args = {
-    'start_date': airflow.utils.dates.days_ago(0),
-    'schedule_interval': '*/5 * * * *',
+    'start_date': datetime.datetime(2020, 3, 29, 15),
+    'schedule_interval': '5 * * * *',
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
     'depends_on_past': False,
@@ -58,7 +58,7 @@ dag = DAG(
     'twitter_mytimeline',
     default_args=default_args,
     description='Load my timeline tweets from twitter API to BQ Serving Layer',
-    dagrun_timeout=timedelta(minutes=60)
+    dagrun_timeout=timedelta(minutes=5)
 )
 
 twitter_python = python_operator.PythonOperator(
