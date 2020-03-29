@@ -16,14 +16,15 @@ from time import time
 import os
 
 default_args = {
-    'start_date': datetime(2020, 3, 29, 15),
+    'start_date': datetime(2020, 3, 29, 14),
     'schedule_interval': '5 * * * *',
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
     'depends_on_past': False,
     'email': ['mlanciau+airflow@google.com'],
     'email_on_failure': True,
-    'email_on_retry': False
+    'email_on_retry': False,
+    'max_active_runs': 1
 }
 
 def twitter_mytimeline(**kwargs):
