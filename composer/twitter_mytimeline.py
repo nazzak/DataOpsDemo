@@ -16,7 +16,7 @@ from time import time
 import os
 
 default_args = {
-    'start_date': datetime.datetime(2020, 3, 29, 15),
+    'start_date': datetime(2020, 3, 29, 15),
     'schedule_interval': '5 * * * *',
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
