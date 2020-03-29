@@ -22,8 +22,7 @@ default_args = {
     'depends_on_past': False,
     'email': ['mlanciau+airflow@google.com'],
     'email_on_failure': True,
-    'email_on_retry': False,
-    'max_active_runs': 1
+    'email_on_retry': False
 }
 
 def twitter_mytimeline(**kwargs):
