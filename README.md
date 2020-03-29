@@ -1,8 +1,8 @@
 # DataOps_demo
-This repository is in construction, it will describe how to automate data ingestion, analytics and feedback loop via DevOps
-The goal is to demonstrate integration between tools so no FinOps will be considered instead I will use of different stacks even if I don't need all of them
+This repository is in construction, it will describe how to automate data ingestion, analytics and feedback loop via DevOps / DataOps
+No FinOps will be considered here, instead I will use different stack even if I don't need all of them, just to demonstrate integration between technology
 
-## Technologies used
+## Technology used
 * Cloud Composer
 * Cloud Function
 * Cloud Scheduler
@@ -13,3 +13,11 @@ The goal is to demonstrate integration between tools so no FinOps will be consid
 * Dataflow
 * Dataproc
 * Datastudio
+
+## Tweets collection every minutes using Cloud Scheduler & Cloud Function
+
+
+## Collect your twitter timeline every hour with Cloud Composer
+
+
+## ETL with Dataproc, Dataflow and BigQuery
