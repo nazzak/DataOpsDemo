@@ -17,7 +17,6 @@ import os
 
 default_args = {
     'start_date': datetime(2020, 3, 15),
-    'schedule_interval': '@daily',
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
     'depends_on_past': False,
@@ -30,7 +29,8 @@ dag = DAG(
     'twitter_search',
     default_args=default_args,
     description='Load data from GCS to BQ Serving Layer',
-    dagrun_timeout=timedelta(minutes=60)
+    schedule_interval='@daily',
+    dagrun_timeout=timedelta(minutes=30)
 )
 
 load_raw_data = dataflow_operator.DataFlowPythonOperator(

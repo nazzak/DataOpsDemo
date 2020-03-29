@@ -16,8 +16,7 @@ from time import time
 import os
 
 default_args = {
-    'start_date': airflow.utils.dates.days_ago(0),
-    'schedule_interval': '0 */4 * * *',
+    'start_date': datetime(2020, 3, 29, 13),
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
     'depends_on_past': False,
@@ -56,9 +55,10 @@ def twitter_mytimeline(**kwargs):
 
 dag = DAG(
     'twitter_mytimeline',
+    schedule_interval='@hourly',
     default_args=default_args,
     description='Load my timeline tweets from twitter API to BQ Serving Layer',
-    dagrun_timeout=timedelta(minutes=60)
+    dagrun_timeout=timedelta(minutes=4)
 )
 
 twitter_python = python_operator.PythonOperator(
@@ -81,7 +81,20 @@ copy_file = gcs_to_gcs.GoogleCloudStorageToGoogleCloudStorageOperator(
 load_data_to_bq = bash_operator.BashOperator(
     task_id='load_data_to_bq',
     dag=dag,
-    bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --autodetect dataops_demo_sl_dev.t_twitter_mytimeline gs://{{ var.value.v_twitter_temp_bucket }}/twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
+    bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --replace --autodetect dataops_demo_raw_dev.t_twitter_mytimeline gs://{{ var.value.v_twitter_temp_bucket }}/twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
 )
 
-twitter_python >> copy_file >> load_data_to_bq
+from_raw_to_sl = bigquery_operator.BigQueryOperator(
+    task_id='from_raw_to_sl',
+    dag=dag,
+    sql='''SELECT PARSE_TIMESTAMP('%a %b %d %H:%M:%S +0000 %E4Y', created_at) AS c_timestamp, CAST(PARSE_TIMESTAMP('%a %b %d %H:%M:%S +0000 %E4Y', created_at) AS date) as c_created, id_str, truncated, user_name, lang, user_screen_name, text, user_location, retweeted
+        FROM dataops_demo_raw_dev.t_twitter_mytimeline''',
+    destination_dataset_table='dataops_demo_sl_dev.t_twitter_mytimeline',
+    write_disposition='WRITE_APPEND',
+    create_disposition='CREATE_IF_NEEDED',
+    time_partitioning={'type':'DAY', 'field':'c_created'},
+    allow_large_results=True,
+    use_legacy_sql=False
+)
+
+twitter_python >> copy_file >> load_data_to_bq >> from_raw_to_sl
