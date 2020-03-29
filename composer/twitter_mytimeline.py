@@ -17,7 +17,6 @@ import os
 
 default_args = {
     'start_date': datetime(2020, 3, 29, 13),
-    'schedule_interval': '@hourly',
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
     'depends_on_past': False,
@@ -57,9 +56,10 @@ def twitter_mytimeline(**kwargs):
 
 dag = DAG(
     'twitter_mytimeline',
+    schedule_interval='@hourly',
     default_args=default_args,
     description='Load my timeline tweets from twitter API to BQ Serving Layer',
-    dagrun_timeout=timedelta(minutes=5)
+    dagrun_timeout=timedelta(minutes=4)
 )
 
 twitter_python = python_operator.PythonOperator(
