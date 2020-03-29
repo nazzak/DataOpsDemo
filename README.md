@@ -20,4 +20,7 @@ No FinOps will be considered here, instead I will use different stack even if I 
 ## Collect your twitter timeline every hour with Cloud Composer
 
 
-## ETL with Dataproc, Dataflow and BigQuery
+## ETL with Dataproc, Dataflown, Cloud Storage and BigQuery
+
+
+## Automatic CI / CD with Cloud Build and Stackdriver
