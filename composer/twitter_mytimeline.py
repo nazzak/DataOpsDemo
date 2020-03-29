@@ -17,7 +17,7 @@ import os
 
 default_args = {
     'start_date': datetime(2020, 3, 29, 13),
-    'schedule_interval': '5 * * * *',
+    'schedule_interval': '*/5 * * * *',
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
     'depends_on_past': False,
