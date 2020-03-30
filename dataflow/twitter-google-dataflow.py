@@ -3,20 +3,29 @@ import apache_beam as beam
 import argparse
 from math import trunc
 import time
+import logging
 import json
 
+def checkId(line):
+    record = json.loads(line)
+    filter = True
+    if 'id' not in record:
+        logging.info('INFO : %s', line)
+        filter = False
+    return filter
+
 def ExtractFields(line):
-   record = json.loads(line)
-   new_record = {}
-   new_record['created_at'] = record['created_at']
-   new_record['lang'] = record['lang']
-   new_record['id'] = record['id']
-   new_record['user_id'] = record['user']['id']
-   new_record['user_name'] = record['user']['name']
-   new_record['user_screen_name'] = record['user']['screen_name']
-   new_record['text'] = record['text']
-   new_record['json'] = json.dumps(record)
-   return new_record
+    record = json.loads(line)
+    new_record = {}
+    new_record['created_at'] = record['created_at']
+    new_record['lang'] = record['lang']
+    new_record['id'] = record['id']
+    new_record['user_id'] = record['user']['id']
+    new_record['user_name'] = record['user']['name']
+    new_record['user_screen_name'] = record['user']['screen_name']
+    new_record['text'] = record['text']
+    new_record['json'] = json.dumps(record)
+    return new_record
 
 known_args = None
 pipeline_args = None
@@ -42,6 +51,7 @@ def run():
 
    (p
       | 'ReadMyFile' >> beam.io.ReadFromText(input)
+      | 'Filter' >> beam.Filter(checkId)
       | 'ExtractFields' >> beam.Map(ExtractFields)
       | 'write' >> beam.io.WriteToBigQuery(
         table='dataops_demo_raw_dev.t_twitter_google_' + known_args.job_date.replace('-','_'),
