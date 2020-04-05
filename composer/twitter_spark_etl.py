@@ -52,7 +52,9 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     worker_machine_type='n1-standard-1',
     graceful_decommission_timeout='1h',
     image_version='1.4',
-    storage_bucket='{{ var.value.v_twitter_temp_bucket }}'
+    storage_bucket='{{ var.value.v_twitter_temp_bucket }}',
+    subnetwork_uri='10.172.0.0/20'
+    internal_ip_only=True
 )
 
 # Execute PySpark job
