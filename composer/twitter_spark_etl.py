@@ -45,7 +45,7 @@ with models.DAG('twitter_spark_etl', schedule_interval=None, default_args=defaul
     # Execute PySpark job
     run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
         task_id='run_pyspark_job',
-        main='/home/airflow/gcs/dataproc/twitterPySparkSplitting.py',
+        main='gs://{{ var.value.v_composer_bucket }}dataproc/twitterPySparkSplitting.py',
         cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}'
     )
 
