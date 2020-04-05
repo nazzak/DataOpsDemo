@@ -20,6 +20,8 @@ steps:
   args: ['cp', 'composer/twitter_spark_etl.py', 'gs://${_GCS_COMPOSER_FOLDER}/dags/twitter_spark_etl.py']
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'dataflow/twitter-google-dataflow.py', 'gs://${_GCS_COMPOSER_FOLDER}/dags/dataflow/twitter-google-dataflow.py']
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'dataproc/twitterPySparkSplitting.py', 'gs://${_GCS_COMPOSER_FOLDER}/dags/dataproc/twitterPySparkSplitting.py']
 - name: bash
   args: ['sleep', '20']
 #- name: gcr.io/$PROJECT_ID/airflow

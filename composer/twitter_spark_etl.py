@@ -32,27 +32,28 @@ with models.DAG('twitter_spark_etl', schedule_interval=None, default_args=defaul
     # Create a Cloud Dataproc cluster.
     create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
         task_id='create_dataproc_cluster',
-        project_id='google.com:mlanciau-demo-1',
-        cluster_name='twitterdataproccluster-mlanciau-{{ ds_nodash }}',
-        num_workers=4,
+        project_id=os.environ.get('GCP_PROJECT'),
+        cluster_name='twitter-dataproc--mlanciau-{{ ds_nodash }}',
+        num_workers=3,
+        num_preemptible_workers=2,
         zone='europe-west6-c',
         master_machine_type='n1-standard-1',
         worker_machine_type='n1-standard-1',
-        num_preemptible_workers=1
+        graceful_decommission_timeout='1h'
     )
 
     # Execute PySpark job
     run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
         task_id='run_pyspark_job',
-        main='gs://europe-west1-mlanciaucompos-9c3e694d-bucket/others/twitterPySparkSplitting.py',
-        cluster_name='twitterdataproccluster-mlanciau-{{ ds_nodash }}'
+        main='/home/airflow/gcs/dataproc/twitterPySparkSplitting.py',
+        cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}'
     )
 
     # Delete Cloud Dataproc cluster.
     delete_dataproc_cluster = dataproc_operator.DataprocClusterDeleteOperator(
         task_id='delete_dataproc_cluster',
-        project_id='google.com:mlanciau-demo-1',
-        cluster_name='twitterdataproccluster-mlanciau-{{ ds_nodash }}',
+        project_id=os.environ.get('GCP_PROJECT'),
+        cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
         trigger_rule=trigger_rule.TriggerRule.ALL_DONE
     )
 
