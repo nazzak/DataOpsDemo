@@ -24,7 +24,7 @@ import os
 default_dag_args = {
     'start_date': datetime(2020, 3, 29),
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    'retry_delay': timedelta(minutes=2),
     'depends_on_past': False,
     'email': ['mlanciau+airflow@google.com'],
     'email_on_failure': True,
@@ -53,7 +53,7 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     graceful_decommission_timeout='1h',
     image_version='1.4',
 #    storage_bucket='gs://{{ var.value.v_twitter_temp_bucket }}',
-    subnetwork_uri='10.172.0.0/20',
+    subnetwork_uri='https://www.googleapis.com/compute/v1/projects/dataops-271513/regions/europe-west6/subnetworks/default',
     internal_ip_only=True
 )
 
