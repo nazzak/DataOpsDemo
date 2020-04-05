@@ -54,7 +54,7 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     image_version='1.4',
 #    storage_bucket='gs://{{ var.value.v_twitter_temp_bucket }}',
     subnetwork_uri='https://www.googleapis.com/compute/v1/projects/dataops-271513/regions/europe-west6/subnetworks/default',
-    internal_ip_only=True
+    internal_ip_only=False
 )
 
 # Execute PySpark job
