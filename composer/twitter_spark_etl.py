@@ -34,7 +34,7 @@ default_dag_args = {
 dag = DAG(
     'twitter_spark_etl',
     schedule_interval='@daily',
-    default_args=default_args,
+    default_args=default_dag_args,
     description='ETL using ephemeral Hadoop cluster',
     dagrun_timeout=timedelta(minutes=50)
 )
@@ -50,14 +50,16 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     zone='europe-west6-c',
     master_machine_type='n1-standard-1',
     worker_machine_type='n1-standard-1',
-    graceful_decommission_timeout='1h'
+    graceful_decommission_timeout='1h',
+    image_version='1.4',
+    storage_bucket='{{ var.value.v_twitter_temp_bucket }}'
 )
 
 # Execute PySpark job
 run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
     task_id='run_pyspark_job',
     dag=dag,
-    main='gs://europe-west6-composer-dev-c353e422-bucket/dataproc/twitterPySparkSplitting.py',
+    main='gs://{{ var.value.v_composer_bucket }}/dataproc/twitterPySparkSplitting.py',
     cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}'
 )
 
