@@ -13,10 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
-from airflow import models
+import airflow
+from airflow import DAG
+from datetime import datetime, timedelta
 from airflow.contrib.operators import dataproc_operator
 from airflow.utils import trigger_rule
+from airflow.models import Variable
+import os
 
 default_dag_args = {
     'start_date': datetime(2020, 3, 29),
@@ -28,33 +31,43 @@ default_dag_args = {
     'email_on_retry': False
 }
 
-with models.DAG('twitter_spark_etl', schedule_interval=None, default_args=default_dag_args) as dag:
-    # Create a Cloud Dataproc cluster.
-    create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
-        task_id='create_dataproc_cluster',
-        project_id=os.environ.get('GCP_PROJECT'),
-        cluster_name='twitter-dataproc--mlanciau-{{ ds_nodash }}',
-        num_workers=3,
-        num_preemptible_workers=2,
-        zone='europe-west6-c',
-        master_machine_type='n1-standard-1',
-        worker_machine_type='n1-standard-1',
-        graceful_decommission_timeout='1h'
-    )
+dag = DAG(
+    'twitter_spark_etl',
+    schedule_interval='@daily',
+    default_args=default_args,
+    description='ETL using ephemeral Hadoop cluster',
+    dagrun_timeout=timedelta(minutes=50)
+)
 
-    # Execute PySpark job
-    run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
-        task_id='run_pyspark_job',
-        main='gs://{{ var.value.v_composer_bucket }}/dataproc/twitterPySparkSplitting.py',
-        cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}'
-    )
+# Create a Cloud Dataproc cluster.
+create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
+    task_id='create_dataproc_cluster',
+    dag=dag,
+    project_id=os.environ.get('GCP_PROJECT'),
+    cluster_name='twitter-dataproc--mlanciau-{{ ds_nodash }}',
+    num_workers=3,
+    num_preemptible_workers=2,
+    zone='europe-west6-c',
+    master_machine_type='n1-standard-1',
+    worker_machine_type='n1-standard-1',
+    graceful_decommission_timeout='1h'
+)
 
-    # Delete Cloud Dataproc cluster.
-    delete_dataproc_cluster = dataproc_operator.DataprocClusterDeleteOperator(
-        task_id='delete_dataproc_cluster',
-        project_id=os.environ.get('GCP_PROJECT'),
-        cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
-        trigger_rule=trigger_rule.TriggerRule.ALL_DONE
-    )
+# Execute PySpark job
+run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
+    task_id='run_pyspark_job',
+    dag=dag,
+    main='gs://europe-west6-composer-dev-c353e422-bucket/dataproc/twitterPySparkSplitting.py',
+    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}'
+)
 
-    create_dataproc_cluster >> run_pyspark_job >> delete_dataproc_cluster
+# Delete Cloud Dataproc cluster.
+delete_dataproc_cluster = dataproc_operator.DataprocClusterDeleteOperator(
+    task_id='delete_dataproc_cluster',
+    dag=dag,
+    project_id=os.environ.get('GCP_PROJECT'),
+    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
+    trigger_rule=trigger_rule.TriggerRule.ALL_DONE
+)
+
+create_dataproc_cluster >> run_pyspark_job >> delete_dataproc_cluster
