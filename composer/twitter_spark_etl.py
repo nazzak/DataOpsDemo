@@ -47,13 +47,13 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     cluster_name='twitter-dataproc--mlanciau-{{ ds_nodash }}',
     num_workers=3,
     num_preemptible_workers=2,
-    zone='europe-west6-c',
+    zone='europe-west1-c',
     master_machine_type='n1-standard-1',
     worker_machine_type='n1-standard-1',
     graceful_decommission_timeout='1h',
     image_version='1.4',
 #    storage_bucket='gs://{{ var.value.v_twitter_temp_bucket }}',
-    subnetwork_uri='https://www.googleapis.com/compute/v1/projects/dataops-271513/regions/europe-west6/subnetworks/default',
+    subnetwork_uri='https://www.googleapis.com/compute/v1/projects/dataops-271513/regions/europe-west1/subnetworks/default',
     internal_ip_only=False
 )
 
