@@ -44,7 +44,7 @@ t_twitter_google.createOrReplaceTempView('t_twitter_google')
 
 t_twitter_google.printSchema()
 
-tweets_words = t_twitter_google.map(lambda row: row['text'].split(' ')) #data.map(lambda line: line.strip().split(' ')) #df.filter
+tweets_words = t_twitter_google.rdd.flatMap(lambda row: row['text'].split(' ')) #data.map(lambda line: line.strip().split(' ')) #df.filter
 model = FPGrowth.train(tweets_words, minSupport=0.2, numPartitions=50)
 result = model.freqItemsets().collect()
 for fi in result:
