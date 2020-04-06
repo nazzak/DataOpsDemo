@@ -1,22 +1,46 @@
 #!/usr/bin/env python3
+
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import apache_beam as beam
 import argparse
 from math import trunc
 import time
+import logging
 import json
 
+def checkId(line):
+    record = json.loads(line)
+    filter = True
+    if 'id' not in record:
+        logging.info('INFO : %s', line)
+        filter = False
+    return filter
+
 def ExtractFields(line):
-   record = json.loads(line)
-   new_record = {}
-   new_record['created_at'] = record['created_at']
-   new_record['lang'] = record['lang']
-   new_record['id'] = record['id']
-   new_record['user_id'] = record['user']['id']
-   new_record['user_name'] = record['user']['name']
-   new_record['user_screen_name'] = record['user']['screen_name']
-   new_record['text'] = record['text']
-   new_record['json'] = json.dumps(record)
-   return new_record
+    record = json.loads(line)
+    new_record = {}
+    new_record['created_at'] = record['created_at']
+    new_record['lang'] = record['lang']
+    new_record['id'] = record['id']
+    new_record['user_id'] = record['user']['id']
+    new_record['user_name'] = record['user']['name']
+    new_record['user_screen_name'] = record['user']['screen_name']
+    new_record['text'] = record['text']
+    new_record['json'] = json.dumps(record)
+    return new_record
 
 known_args = None
 pipeline_args = None
@@ -42,6 +66,7 @@ def run():
 
    (p
       | 'ReadMyFile' >> beam.io.ReadFromText(input)
+      | 'Filter' >> beam.Filter(checkId)
       | 'ExtractFields' >> beam.Map(ExtractFields)
       | 'write' >> beam.io.WriteToBigQuery(
         table='dataops_demo_raw_dev.t_twitter_google_' + known_args.job_date.replace('-','_'),
