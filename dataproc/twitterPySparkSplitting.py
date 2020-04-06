@@ -38,7 +38,7 @@ print(args.job_date)
 t_twitter_google = spark.read.format('bigquery') \
   .option("table", 'dataops_demo_sl_dev.t_twitter_google') \
   .option("filter", "c_created = " + args.job_date) \
-  .option("filter", "lang = en") \
+  .option("filter", "lang = 'en'") \
   .load()
 t_twitter_google.createOrReplaceTempView('t_twitter_google')
 
