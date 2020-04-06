@@ -53,7 +53,7 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     graceful_decommission_timeout='1h',
     image_version='1.4',
 #    storage_bucket='gs://{{ var.value.v_twitter_temp_bucket }}',
-    subnetwork_uri='https://www.googleapis.com/compute/v1/projects/dataops-271513/regions/europe-west1/subnetworks/default',
+    subnetwork_uri='https://www.googleapis.com/compute/v1/projects/' + os.environ.get('GCP_PROJECT') + '/regions/europe-west1/subnetworks/default',
     internal_ip_only=False
 )
 
@@ -62,7 +62,9 @@ run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
     task_id='run_pyspark_job',
     dag=dag,
     main='gs://{{ var.value.v_composer_bucket }}/dataproc/twitterPySparkSplitting.py',
-    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}'
+    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
+    dataproc_pyspark_jars=['gs://spark-lib/bigquery/spark-bigquery-latest.jar'],
+    arguments=["--dataproc=1.4"]
 )
 
 # Delete Cloud Dataproc cluster.
