@@ -47,15 +47,15 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
     num_workers=3,
     num_preemptible_workers=2,
-    zone='europe-west1-c',
+    zone='europe-west6-c',
     master_machine_type='n1-standard-1',
     worker_machine_type='n1-standard-1',
     idle_delete_ttl=3600,
     image_version='1.4',
     storage_bucket='dataproc_dataops_tmp',
 #    storage_bucket='gs://{{ var.value.v_twitter_temp_bucket }}',
-    subnetwork_uri='https://www.googleapis.com/compute/v1/projects/' + os.environ.get('GCP_PROJECT') + '/regions/europe-west1/subnetworks/default',
-    internal_ip_only=True
+    subnetwork_uri='https://www.googleapis.com/compute/v1/projects/' + os.environ.get('GCP_PROJECT') + '/regions/europe-west6/subnetworks/default',
+    internal_ip_only=True #Enable Private Google Access on subnetwork 'default'
 )
 
 # Execute PySpark job
