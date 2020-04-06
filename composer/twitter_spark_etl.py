@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Copyright 2018 Google LLC
+
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -46,7 +47,7 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     dag=dag,
     project_id=os.environ.get('GCP_PROJECT'),
     cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
-    num_workers=3,
+    num_workers=2,
     num_preemptible_workers=2,
     zone='europe-west6-c',
     master_machine_type='n1-standard-1',
