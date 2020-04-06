@@ -16,6 +16,7 @@
 
 from pyspark.sql import SparkSession
 from pyspark.mllib.feature import HashingTF, IDF
+from pyspark.mllib.fpm import FPGrowth
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -37,12 +38,17 @@ print(args.job_date)
 t_twitter_google = spark.read.format('bigquery') \
   .option("table", 'dataops_demo_sl_dev.t_twitter_google') \
   .option("filter", "c_created = " + args.job_date) \
+  .option("filter", "lang = en") \
   .load()
 t_twitter_google.createOrReplaceTempView('t_twitter_google')
 
 t_twitter_google.printSchema()
 
-
+tweets_words = t_twitter_google['text'].split(' ')
+model = FPGrowth.train(transactions, minSupport=0.2, numPartitions=50)
+result = model.freqItemsets().collect()
+for fi in result:
+    print(fi)
 
 # Perform word count.
 #word_count = spark.sql(
