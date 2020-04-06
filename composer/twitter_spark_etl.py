@@ -52,16 +52,17 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     worker_machine_type='n1-standard-1',
     idle_delete_ttl=3600,
     image_version='1.4',
+    storage_bucket='twitter-dataproc-bucket',
 #    storage_bucket='gs://{{ var.value.v_twitter_temp_bucket }}',
     subnetwork_uri='https://www.googleapis.com/compute/v1/projects/' + os.environ.get('GCP_PROJECT') + '/regions/europe-west1/subnetworks/default',
-    internal_ip_only=False
+    internal_ip_only=True
 )
 
 # Execute PySpark job
 run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
     task_id='run_pyspark_job',
     dag=dag,
-    main='gs://' + Variable.get('v_composer_bucket') + '/dataproc/twitterPySparkSplitting.py',
+    main='gs://' + Variable.get('v_composer_bucket') + '/dags/dataproc/twitterPySparkSplitting.py',
     cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
     dataproc_pyspark_jars=['gs://spark-lib/bigquery/spark-bigquery-latest.jar'],
     arguments=["--dataproc=1.4"]
