@@ -19,7 +19,21 @@ spark.conf.set('temporaryGcsBucket', args.bucket)
 
 print(args.job_date)
 
+words = spark.read.format('bigquery') \
+  .option("table", 'dataops_demo_sl_dev.t_twitter_google') \
+  .option("filter", "c_created = " + args.job_date)
+  .load()
+words.createOrReplaceTempView('t_twitter_google')
 
+# Perform word count.
+#word_count = spark.sql(
+#    'SELECT word, SUM(word_count) AS word_count FROM words GROUP BY word')
+#word_count.show()
+#word_count.printSchema()
+
+#word_count.write.format('bigquery') \
+#  .option('table', 'wordcount_dataset.wordcount_output') \
+#  .save()
 
 
 # from __future__ import absolute_import

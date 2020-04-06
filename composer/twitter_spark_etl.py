@@ -65,7 +65,7 @@ run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
     main='gs://' + Variable.get('v_composer_bucket') + '/dags/dataproc/twitterPySparkSplitting.py',
     cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
     dataproc_pyspark_jars=['gs://spark-lib/bigquery/spark-bigquery-latest.jar'],
-    arguments=["--dataproc=1.4", "--job_date={{ ds_nodash }}", "--bucket=dataproc_dataops_tmp"]
+    arguments=["--dataproc=1.4", "--job_date={{ ds }}", "--bucket=dataproc_dataops_tmp"]
 )
 
 # Delete Cloud Dataproc cluster.
