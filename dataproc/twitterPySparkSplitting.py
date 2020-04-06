@@ -4,8 +4,8 @@ from pyspark.sql import SparkSession
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--job_date', required=True)
-parser.add_argument('--bucket', required=True)
+parser.add_argument("--job_date", required=True)
+parser.add_argument("--bucket", required=True)
 parser.add_argument("--dataproc", help="Version of dataproc")
 args = parser.parse_args()
 
@@ -19,11 +19,13 @@ spark.conf.set('temporaryGcsBucket', args.bucket)
 
 print(args.job_date)
 
-words = spark.read.format('bigquery') \
+t_twitter_google = spark.read.format('bigquery') \
   .option("table", 'dataops_demo_sl_dev.t_twitter_google') \
-  .option("filter", "c_created = " + args.job_date)
+  .option("filter", "c_created = " + args.job_date) \
   .load()
-words.createOrReplaceTempView('t_twitter_google')
+t_twitter_google.createOrReplaceTempView('t_twitter_google')
+
+t_twitter_google.printSchema()
 
 # Perform word count.
 #word_count = spark.sql(

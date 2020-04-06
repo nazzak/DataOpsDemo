@@ -36,7 +36,8 @@ dag = DAG(
     schedule_interval='@daily',
     default_args=default_dag_args,
     description='ETL using ephemeral Hadoop cluster',
-    dagrun_timeout=timedelta(minutes=50)
+    dagrun_timeout=timedelta(minutes=50),
+    max_active_runs=1
 )
 
 # Create a Cloud Dataproc cluster.
