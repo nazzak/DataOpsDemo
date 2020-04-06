@@ -4,16 +4,22 @@ from pyspark.sql import SparkSession
 import argparse
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--job_date', required=True)
+parser.add_argument('--bucket', required=True)
 parser.add_argument("--dataproc", help="Version of dataproc")
 args = parser.parse_args()
 
 spark = SparkSession \
   .builder \
   .master('yarn') \
-  .appName('spark-bigquery-demo') \
+  .appName('twitter-spark-bigquery-demo') \
   .getOrCreate()
 
-print(args.dataproc)
+spark.conf.set('temporaryGcsBucket', args.bucket)
+
+print(args.job_date)
+
+
 
 
 # from __future__ import absolute_import
