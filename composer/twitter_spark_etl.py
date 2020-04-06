@@ -55,7 +55,7 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     storage_bucket='dataproc_dataops_tmp',
 #    storage_bucket='gs://{{ var.value.v_twitter_temp_bucket }}',
     subnetwork_uri='https://www.googleapis.com/compute/v1/projects/' + os.environ.get('GCP_PROJECT') + '/regions/europe-west6/subnetworks/default',
-    internal_ip_only=True #Enable Private Google Access on subnetwork 'default'
+    internal_ip_only=True #Enable Private Google Access on subnetwork 'default' gcloud compute networks subnets update default --region=europe-west6 --enable-private-ip-google-access
 )
 
 # Execute PySpark job
