@@ -43,8 +43,11 @@ t_twitter_google = spark.read.format('bigquery') \
 t_twitter_google.createOrReplaceTempView('t_twitter_google')
 
 t_twitter_google.printSchema()
+t_twitter_google.head(5)
 
-tweets_words = t_twitter_google.rdd.flatMap(lambda row: row['text'].split(' ')) #data.map(lambda line: line.strip().split(' ')) #df.filter
+tweets_words = spark.sql("SELECT explode(split(text, ' ')) FROM t_twitter_google")
+tweets_words.head(50)
+
 model = FPGrowth.train(tweets_words, minSupport=0.2, numPartitions=50)
 result = model.freqItemsets().collect()
 for fi in result:
