@@ -60,6 +60,12 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     internal_ip_only=True #Enable Private Google Access on subnetwork 'default' gcloud compute networks subnets update default --region=europe-west6 --enable-private-ip-google-access
 )
 
+delete_ml_partition = bash_operator.BashOperator(
+    task_id='delete_ml_partition',
+    dag=dag,
+    bash_command='''bq rm -f -t 'dataops_demo_ml_dev.t_twitter_google${{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m%d") }}' ''',
+)
+
 # Execute PySpark job
 run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
     task_id='run_pyspark_job',
@@ -79,4 +85,4 @@ delete_dataproc_cluster = dataproc_operator.DataprocClusterDeleteOperator(
     trigger_rule=trigger_rule.TriggerRule.ALL_DONE
 )
 
-create_dataproc_cluster >> run_pyspark_job >> delete_dataproc_cluster
+create_dataproc_cluster >> delete_ml_partition >> run_pyspark_job >> delete_dataproc_cluster

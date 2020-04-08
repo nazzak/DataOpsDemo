@@ -75,7 +75,7 @@ model.freqItemsets.withColumn("c_date", lit(args.job_date).cast("date")).write.f
   .mode("append") \
   .save()
 
-#overwrite
+#overwrite faire le test
 
 #word_count.write.format('bigquery') \
 #  .option('table', 'wordcount_dataset.wordcount_output') \
