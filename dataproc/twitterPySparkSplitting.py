@@ -15,8 +15,12 @@
 # limitations under the License.
 
 from pyspark.sql import SparkSession
-from pyspark.mllib.feature import HashingTF, IDF
-from pyspark.mllib.fpm import FPGrowth
+#from pyspark.mllib.feature import HashingTF, IDF
+from pyspark.ml.fpm import FPGrowth
+#from pyspark.mllib.feature import Word2Vec
+#from pyspark.sql.functions import length
+#from pyspark.sql.functions import col
+
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -37,21 +41,39 @@ print(args.job_date)
 
 t_twitter_google = spark.read.format('bigquery') \
   .option("table", 'dataops_demo_sl_dev.t_twitter_google') \
-  .option("filter", "c_created = " + args.job_date) \
-  .option("filter", "lang = 'en'") \
+  .option("filter", "c_created = '" + args.job_date + "'") \
   .load()
 t_twitter_google.createOrReplaceTempView('t_twitter_google')
 
 t_twitter_google.printSchema()
-t_twitter_google.head(5)
+t_twitter_google.show()
 
-tweets_words = spark.sql("SELECT explode(split(text, ' ')) FROM t_twitter_google")
-tweets_words.head(50)
+tweets_words = spark.sql("SELECT id, collect_list(words) AS word_list \
+                          FROM (\
+                           SELECT id, words, COUNT(*) AS c_nbr \
+                           FROM (\
+                            SELECT id, explode(split(regexp_replace(lower(text), '[^a-zA-Z0-9#@ ]+', ''), ' ')) as words \
+                            FROM t_twitter_google WHERE lang = 'en' \
+                           ) ssreq \
+                           WHERE length(words) > 3 AND words NOT LIKE 'http%' \
+                           GROUP BY id, words \
+                          ) ssarray \
+                          GROUP BY id")
+#enlever les éléments < 3 et qui ne sont pas du texte
+tweets_words.cache()
+tweets_words.show()
 
-model = FPGrowth.train(tweets_words, minSupport=0.2, numPartitions=50)
-result = model.freqItemsets().collect()
-for fi in result:
-    print(fi)
+#word2vec = Word2Vec()
+#model = word2vec.fit(tweets_words.rdd)
+
+#model = FPGrowth.train(tweets_words, minSupport=0.2, numPartitions=50)
+fpGrowth = FPGrowth(itemsCol="word_list", minSupport=0.1, minConfidence=0.1)
+model = fpGrowth.fit(tweets_words)
+model.freqItemsets.show()
+model.associationRules.show()
+#result = model.freqItemsets().collect()
+#for fi in result:
+#    print(fi)
 
 # Perform word count.
 #word_count = spark.sql(
