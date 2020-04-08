@@ -21,7 +21,7 @@ from pyspark.ml.fpm import FPGrowth
 #from pyspark.sql.functions import length
 #from pyspark.sql.functions import col
 from pyspark.sql.functions import lit
-from pyspark.sql.functions import to_date
+#from pyspark.sql.functions import to_date
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -49,7 +49,7 @@ t_twitter_google.createOrReplaceTempView('t_twitter_google')
 t_twitter_google.printSchema()
 #t_twitter_google.show()
 
-# very basic filtering and ML, 10x way to improve it, later
+# very basic filtering and ML, 10x way to improve it, later, also all that can be done directly on GCP with BQ so this is just for demoing integration
 tweets_words = spark.sql("SELECT id, collect_list(words) AS word_list \
                           FROM (\
                            SELECT id, words, COUNT(*) AS c_nbr \
@@ -72,7 +72,10 @@ model.associationRules.show(20, False)
 model.freqItemsets.withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
   .option("table","dataops_demo_ml_dev.t_twitter_google") \
   .option("partitionField","c_date") \
+  .mode("append") \
   .save()
+
+#overwrite
 
 #word_count.write.format('bigquery') \
 #  .option('table', 'wordcount_dataset.wordcount_output') \
