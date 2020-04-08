@@ -20,7 +20,6 @@ from pyspark.ml.fpm import FPGrowth
 #from pyspark.mllib.feature import Word2Vec
 #from pyspark.sql.functions import length
 #from pyspark.sql.functions import col
-
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -61,12 +60,12 @@ tweets_words = spark.sql("SELECT id, collect_list(words) AS word_list \
                           GROUP BY id")
 
 tweets_words.cache()
-tweets_words.show()
+tweets_words.show(40, false)
 
 fpGrowth = FPGrowth(itemsCol="word_list", minSupport=0.1, minConfidence=0.1)
 model = fpGrowth.fit(tweets_words)
-model.freqItemsets.show()
-model.associationRules.show()
+model.freqItemsets.show(20, false)
+model.associationRules.show(20, false)
 
 # Perform word count.
 #word_count = spark.sql(
