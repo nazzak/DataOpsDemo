@@ -18,6 +18,7 @@ import airflow
 from airflow import DAG
 from datetime import datetime, timedelta
 from airflow.contrib.operators import dataproc_operator
+from airflow.operators import bash_operator
 from airflow.utils import trigger_rule
 from airflow.models import Variable
 import os
