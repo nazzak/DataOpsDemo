@@ -20,6 +20,8 @@ from pyspark.ml.fpm import FPGrowth
 #from pyspark.mllib.feature import Word2Vec
 #from pyspark.sql.functions import length
 #from pyspark.sql.functions import col
+from pyspark.sql.functions import lit
+from pyspark.sql.functions import to_date
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -45,38 +47,32 @@ t_twitter_google = spark.read.format('bigquery') \
 t_twitter_google.createOrReplaceTempView('t_twitter_google')
 
 t_twitter_google.printSchema()
-t_twitter_google.show()
+#t_twitter_google.show()
 
+# very basic filtering and ML, 10x way to improve it, later
 tweets_words = spark.sql("SELECT id, collect_list(words) AS word_list \
                           FROM (\
                            SELECT id, words, COUNT(*) AS c_nbr \
                            FROM (\
                             SELECT id, explode(split(regexp_replace(lower(text), '[^a-zA-Z0-9#@ ]+', ' '), ' ')) as words \
-                            FROM t_twitter_google WHERE lang = 'en' \
+                            FROM t_twitter_google WHERE lang = 'en' AND lower(text) LIKE '%google%' \
                            ) ssreq \
                            WHERE length(words) > 3 AND words NOT LIKE 'http%' \
                            GROUP BY id, words \
                           ) ssarray \
-                          GROUP BY id")
+                          GROUP BY id").cache()
 
-tweets_words.cache()
-tweets_words.show(40, false)
+tweets_words.show(40, False)
 
-fpGrowth = FPGrowth(itemsCol="word_list", minSupport=0.1, minConfidence=0.1)
+fpGrowth = FPGrowth(itemsCol="word_list", minSupport=0.02, minConfidence=0.02)
 model = fpGrowth.fit(tweets_words)
-model.freqItemsets.show(20, false)
-model.associationRules.show(20, false)
+model.freqItemsets.show(40, False)
+model.associationRules.show(20, False)
 
-# Perform word count.
-#word_count = spark.sql(
-#    'SELECT word, SUM(word_count) AS word_count FROM words GROUP BY word')
-#word_count.show()
-#word_count.printSchema()
-
-#df.write
-#  .format("bigquery")
-#  .option("table","dataset.table")
-#  .save()
+model.freqItemsets.withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
+  .option("table","dataops_demo_ml_dev.t_twitter_google") \
+  .option("partitionField","c_date") \
+  .save()
 
 #word_count.write.format('bigquery') \
 #  .option('table', 'wordcount_dataset.wordcount_output') \
