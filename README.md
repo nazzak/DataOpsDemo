@@ -3,7 +3,7 @@ This repository is in construction, I started it while staying at home during co
 No FinOps will be considered here, instead I will use several different stack even if I don't need all of them, just to demonstrate integration between technology
 
 ## Business requirements
-Our goal here is to know more about Vanves (city where I am living) and Cloud providers (news, release, interesting blogs, outage).
+Our goal here is to know more about Vanves (city where I am living) and Cloud providers (news, release, interesting blogs, outage)
 
 ## Technical requirements
 This demo will focus on DataOps approach, so every component will be stored in [Github](https://github.com/mlanciau/DataOpsDemo), I will the same GCP project with prefix naming convention (-dev, -prod, but you can have several GCP project for dev, int, preprod and prod if you prefer), all installation and initialisation will be done automatically by [Cloud Build](https://cloud.google.com/cloud-build) (10x easier than Jenkins)
@@ -11,35 +11,28 @@ This demo will focus on DataOps approach, so every component will be stored in [
 ## Technology used
 
 ### Desktop
-* (Atom)[https://atom.io/]
-* (GitHub Desktop)[https://desktop.github.com/]
-* (Terminal)[https://en.wikipedia.org/wiki/Terminal_(macOS)]
-* (Google Cloud SDK)[https://cloud.google.com/sdk]
-* (Google Chrome)[https://www.google.com/chrome/]
+* [Atom](https://atom.io/)
+* [GitHub Desktop](https://desktop.github.com/)
+* [Terminal](https://en.wikipedia.org/wiki/Terminal_(macOS))
+* [Google Cloud SDK](https://cloud.google.com/sdk)
+* [Google Chrome](https://www.google.com/chrome/)
 
 ### Google Cloud Platform
+* [Cloud Storage](https://cloud.google.com/storage) :
+* [Cloud Firestore](https://cloud.google.com/firestore) :
+* [BigQuery](https://cloud.google.com/bigquery) :
 
-#### File Storage
-* Cloud Storage
+* [Cloud Composer](https://cloud.google.com/composer) :
+* [Cloud Scheduler](https://cloud.google.com/scheduler) :
 
-#### Scheduling
-* Cloud Composer
-* Cloud Scheduler
+* [Cloud Build](https://cloud.google.com/cloud-build) :
 
-#### Automation
-* Cloud Build
+* [Dataflow](https://cloud.google.com/dataflow) : ETL
+* [Dataproc](https://cloud.google.com/dataproc) :
+* [Cloud Function](https://cloud.google.com/functions) :
 
-#### Absolute Serverless Datawarehouse
-* BigQuery
-
-#### ETL
-* Dataflow
-* Dataproc
-* Cloud Function
-
-#### Reporting and log analytics
-* Datastudio
-* Stackdriver
+* [Datastudio](https://datastudio.google.com/navigation/reporting) :
+* [Stackdriver](https://cloud.google.com/products/operations) :
 
 ## Tweets collection every minutes using Cloud Scheduler & Cloud Function
 Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/cloud_function) to collect tweets from [twitter API](https://python-twitter.readthedocs.io/en/latest/), one is scheduled every minute thanks to [Cloud Scheduler](https://cloud.google.com/scheduler), one respond to [Google Cloud Storage Triggers](https://cloud.google.com/functions/docs/calling/storage) to reroute the file to the right GCS bucket, then every day this Cloud Composer [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_google_cloud.py) load files via [Dataflow](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) to BigQuery
