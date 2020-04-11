@@ -19,21 +19,17 @@ This demo will focus on DataOps approach, so every component will be stored in [
 * [Python 3](https://www.python.org/downloads/) : Powerful programming language, full of library
 
 ### Google Cloud Platform
-* [Cloud Storage](https://cloud.google.com/storage) :
-* [Cloud Firestore](https://cloud.google.com/firestore) :
-* [BigQuery](https://cloud.google.com/bigquery) :
-
-* [Cloud Composer](https://cloud.google.com/composer) :
-* [Cloud Scheduler](https://cloud.google.com/scheduler) :
-
-* [Cloud Build](https://cloud.google.com/cloud-build) :
-
-* [Dataflow](https://cloud.google.com/dataflow) : ETL
-* [Dataproc](https://cloud.google.com/dataproc) :
-* [Cloud Function](https://cloud.google.com/functions) :
-
-* [Datastudio](https://datastudio.google.com/navigation/reporting) :
-* [Stackdriver](https://cloud.google.com/products/operations) :
+* [Cloud Storage](https://cloud.google.com/storage)
+* [Cloud Firestore](https://cloud.google.com/firestore)
+* [BigQuery](https://cloud.google.com/bigquery)
+* [Cloud Composer](https://cloud.google.com/composer)
+* [Cloud Scheduler](https://cloud.google.com/scheduler)
+* [Cloud Build](https://cloud.google.com/cloud-build)
+* [Dataflow](https://cloud.google.com/dataflow)
+* [Dataproc](https://cloud.google.com/dataproc) : Absolute way to create autoscaling Ephemeral (or long live) Hadoop cluster in 90s for running any Hadoop / Spark application
+* [Cloud Function](https://cloud.google.com/functions)
+* [Datastudio](https://datastudio.google.com/navigation/reporting)
+* [Stackdriver](https://cloud.google.com/products/operations)
 
 ## Tweets collection every minutes using Cloud Scheduler & Cloud Function
 Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/cloud_function) to collect tweets from [twitter API](https://python-twitter.readthedocs.io/en/latest/), one is scheduled every minute thanks to [Cloud Scheduler](https://cloud.google.com/scheduler), one respond to [Google Cloud Storage Triggers](https://cloud.google.com/functions/docs/calling/storage) to reroute the file to the right GCS bucket, then every day this Cloud Composer [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_google_cloud.py) load files via [Dataflow](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) to BigQuery
@@ -46,7 +42,8 @@ Simple [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitte
 * [Airflow BigQuery Operator](https://airflow.apache.org/docs/stable/integration.html#bigquery)
 
 ## ETL with Dataproc, Dataflown, Cloud Storage and BigQuery
-TODO
+Dataflow is a fantastic engine to do ETL between multiple source and target on GCP, I created a basic Pipeline [here](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) that demo how to parse JSON file from GCS, do some filtering / data preparation and then store it in BigQuery
+If you have prefer to use Spark or already having a huge Hadoop legacy you would like to migrate, you can find as well a simple Dataproc job [here](https://github.com/mlanciau/DataOpsDemo/blob/master/dataproc/twitterPySparkSplitting.py) that use [Apache Spark SQL connector for Google BigQuery](https://github.com/GoogleCloudDataproc/spark-bigquery-connector)
 
 PS : If you prefer to avoid coding, we have fantastic option for that [Cloud Data Fusion](https://cloud.google.com/data-fusion) and [Cloud Dataprep by Trifacta](https://cloud.google.com/dataprep)
 
