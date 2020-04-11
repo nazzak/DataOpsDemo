@@ -82,8 +82,8 @@ delete_dataproc_cluster = dataproc_operator.DataprocClusterDeleteOperator(
     task_id='delete_dataproc_cluster',
     dag=dag,
     project_id=os.environ.get('GCP_PROJECT'),
-    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
-    trigger_rule=trigger_rule.TriggerRule.ALL_DONE
+    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}'#,
+    #trigger_rule=trigger_rule.TriggerRule.ALL_DONE
 )
 
 create_dataproc_cluster >> delete_ml_partition >> run_pyspark_job >> delete_dataproc_cluster
