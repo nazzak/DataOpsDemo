@@ -32,14 +32,14 @@ def checkId(line):
 def ExtractFields(line):
     record = json.loads(line)
     new_record = {}
-    new_record['created_at'] = record['created_at']
+    new_record['created_at'] = record['created_at'] # core column
     new_record['lang'] = record['lang']
     new_record['id'] = record['id']
     new_record['user_id'] = record['user']['id']
     new_record['user_name'] = record['user']['name']
     new_record['user_screen_name'] = record['user']['screen_name']
     new_record['text'] = record['text']
-    new_record['json'] = json.dumps(record)
+    new_record['json'] = json.dumps(record) # non core column, will be useful for replaying data pipeline if needed
     return new_record
 
 known_args = None

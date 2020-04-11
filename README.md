@@ -1,30 +1,57 @@
-# DataOps_demo
-This repository is in construction, it will describe how to automate data ingestion, analytics and feedback loop via DevOps / DataOps
-No FinOps will be considered here, instead I will use different stack even if I don't need all of them, just to demonstrate integration between technology
+# DataOps demo
+This repository is **in construction**, I started it while staying at home during coronavirus period, it will describe how to automate data ingestion, analytics and feedback loop via DevOps / DataOps.
+No FinOps will be considered here, instead I will use several stack even if I don't need all of them, just to demonstrate integration between technologies
+
+## Business requirements
+Our goal here is to know more about Vanves (city where I am living) and Cloud providers (news, release, interesting blogs)
+
+## Technical requirements
+This demo will focus on DataOps approach, so every component will be stored in [Github](https://github.com/mlanciau/DataOpsDemo), I will use the same GCP project with prefix naming convention (-dev, -prod, but you can have different GCP projects for dev, int, preprod and prod if you prefer), all installation and initialisation will be done automatically by [Cloud Build](https://cloud.google.com/cloud-build) (10x easier than Jenkins)
 
 ## Technology used
-* Cloud Composer
-* Cloud Function
-* Cloud Scheduler
-* Stackdriver
-* BigQuery
-* Cloud Storage
-* Cloud Build
-* Dataflow
-* Dataproc
-* Datastudio
+
+### Desktop
+* [Atom](https://atom.io/) : Nice IDE with numerous package
+* [GitHub Desktop](https://desktop.github.com/)
+* [Terminal](https://en.wikipedia.org/wiki/Terminal_(macOS))
+* [Google Cloud SDK](https://cloud.google.com/sdk)
+* [Google Chrome](https://www.google.com/chrome/)
+* [Python 3](https://www.python.org/downloads/) : Powerful programming language, full of library
+
+### Google Cloud Platform
+* [Cloud Storage](https://cloud.google.com/storage)
+* [Cloud Firestore](https://cloud.google.com/firestore)
+* [BigQuery](https://cloud.google.com/bigquery)
+* [Cloud Composer](https://cloud.google.com/composer)
+* [Cloud Scheduler](https://cloud.google.com/scheduler)
+* [Cloud Build](https://cloud.google.com/cloud-build)
+* [Dataflow](https://cloud.google.com/dataflow)
+* [Dataproc](https://cloud.google.com/dataproc) : Absolute way to create autoscaling Ephemeral (or long live) Hadoop cluster in 90s for running any Hadoop / Spark application
+* [Cloud Function](https://cloud.google.com/functions)
+* [Datastudio](https://datastudio.google.com/navigation/reporting)
+* [Stackdriver](https://cloud.google.com/products/operations)
 
 ## Tweets collection every minutes using Cloud Scheduler & Cloud Function
-Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/cloud_function) to collect tweets from [twitter API](https://python-twitter.readthedocs.io/en/latest/), one is scheduled every minute thanks to [Cloud Scheduler](https://cloud.google.com/scheduler), one respond to [Google Cloud Storage Triggers](https://cloud.google.com/functions/docs/calling/storage), then every day this Cloud Composer [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_google_cloud.py) load files thanks to [Dataflow](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) to BigQuery
+Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/cloud_function) to collect tweets from [twitter API](https://python-twitter.readthedocs.io/en/latest/), one is scheduled every minute thanks to [Cloud Scheduler](https://cloud.google.com/scheduler), one respond to [Google Cloud Storage Triggers](https://cloud.google.com/functions/docs/calling/storage) to reroute the file to the right GCS bucket, then every day this Cloud Composer [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_google_cloud.py) loads files via [Dataflow](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) to BigQuery
 
 ## Collect your twitter timeline every hour with Cloud Composer
 Simple [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_mytimeline.py) to load your twitter timeline every hour, using some powerful features of Cloud Composer
-* Airflow [variable](https://cloud.google.com/composer/docs/concepts/cloud-storage), [XComs](https://airflow.apache.org/docs/stable/concepts.html#xcoms), [bi-directionnal folder](https://cloud.google.com/composer/docs/concepts/cloud-storage)
+* Airflow [variable](https://cloud.google.com/composer/docs/concepts/cloud-storage), [XComs](https://airflow.apache.org/docs/stable/concepts.html#xcoms), [bi-directionnal folder](https://cloud.google.com/composer/docs/concepts/cloud-storage), [Macros](https://airflow.apache.org/docs/stable/macros.html)
 * [Airflow python Operator](https://cloud.google.com/composer/docs/how-to/using/writing-dags#pythonoperator)
-* [Airflow bash Operator](https://cloud.google.com/composer/docs/how-to/using/writing-dags#bashoperator) with gcloud, bq, gsutil and kubectl installed
+* [Airflow bash Operator](https://cloud.google.com/composer/docs/how-to/using/writing-dags#bashoperator) with gcloud, bq, gsutil and kubectl already installed
+* [Airflow BigQuery Operator](https://airflow.apache.org/docs/stable/integration.html#bigquery)
 
 ## ETL with Dataproc, Dataflown, Cloud Storage and BigQuery
-TODO
+Dataflow is a fantastic engine to do ETL between multiple sources and targets on GCP. I created a basic Pipeline [here](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) that demo how to parse JSON file from GCS, do some filtering / data preparation and then store it in BigQuery. If you prefer to use Spark or already have a huge Hadoop legacy to migrate, you can find as well a simple Dataproc job [here](https://github.com/mlanciau/DataOpsDemo/blob/master/dataproc/twitterPySparkSplitting.py) that use [Apache Spark SQL connector for Google BigQuery](https://github.com/GoogleCloudDataproc/spark-bigquery-connector).
+
+PS : If you would like to avoid coding, we have fantastic options for that [Cloud Data Fusion](https://cloud.google.com/data-fusion) and [Cloud Dataprep by Trifacta](https://cloud.google.com/dataprep)
 
 ## Automatic CI / CD with Cloud Build and Stackdriver
-TODO
+
+### Continuous integration
+[Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) aims to improve quality by running tests. For this demo, I am using Cloud Build capabilities to trigger either Cloud Function or Cloud Composer Airflow Dag (only on the dev environment).
+
+### Continuous delivery
+Goal of [Continuous Delivery](https://en.wikipedia.org/wiki/Continuous_delivery) is to **automate deployment** once all the tests are successful. In this demo Cloud Build, will do the proper actions (initialisation, installation, creation of BigQuery Dataset, Table) in the correct environment automatically thanks to [Build Trigger](https://cloud.google.com/cloud-build/docs/running-builds/create-manage-triggers) on the **[dev|master]** branch.
+
+PS : To go further, you might have a look at [Spinnaker](https://cloud.google.com/solutions/continuous-delivery-spinnaker-kubernetes-engine)

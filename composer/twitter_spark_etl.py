@@ -18,6 +18,7 @@ import airflow
 from airflow import DAG
 from datetime import datetime, timedelta
 from airflow.contrib.operators import dataproc_operator
+from airflow.operators import bash_operator
 from airflow.utils import trigger_rule
 from airflow.models import Variable
 import os
@@ -48,7 +49,7 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
     project_id=os.environ.get('GCP_PROJECT'),
     cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
     num_workers=2,
-    num_preemptible_workers=2,
+    num_preemptible_workers=1,
     zone='europe-west6-c',
     master_machine_type='n1-standard-1',
     worker_machine_type='n1-standard-1',
@@ -58,6 +59,12 @@ create_dataproc_cluster = dataproc_operator.DataprocClusterCreateOperator(
 #    storage_bucket='gs://{{ var.value.v_twitter_temp_bucket }}',
     subnetwork_uri='https://www.googleapis.com/compute/v1/projects/' + os.environ.get('GCP_PROJECT') + '/regions/europe-west6/subnetworks/default',
     internal_ip_only=True #Enable Private Google Access on subnetwork 'default' gcloud compute networks subnets update default --region=europe-west6 --enable-private-ip-google-access
+)
+
+delete_ml_partition = bash_operator.BashOperator(
+    task_id='delete_ml_partition',
+    dag=dag,
+    bash_command='''bq rm -f -t 'dataops_demo_ml_dev.t_twitter_google${{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m%d") }}' ''',
 )
 
 # Execute PySpark job
@@ -75,8 +82,8 @@ delete_dataproc_cluster = dataproc_operator.DataprocClusterDeleteOperator(
     task_id='delete_dataproc_cluster',
     dag=dag,
     project_id=os.environ.get('GCP_PROJECT'),
-    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
-    trigger_rule=trigger_rule.TriggerRule.ALL_DONE
+    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}'#,
+    #trigger_rule=trigger_rule.TriggerRule.ALL_DONE
 )
 
-create_dataproc_cluster >> run_pyspark_job >> delete_dataproc_cluster
+create_dataproc_cluster >> delete_ml_partition >> run_pyspark_job >> delete_dataproc_cluster
