@@ -1,5 +1,5 @@
 # DataOps demo
-This repository is in construction, I started it while staying at home during coronavirus period, it will describe how to automate data ingestion, analytics and feedback loop via DevOps / DataOps
+This repository is **in construction**, I started it while staying at home during coronavirus period, it will describe how to automate data ingestion, analytics and feedback loop via DevOps / DataOps
 No FinOps will be considered here, instead I will use several different stack even if I don't need all of them, just to demonstrate integration between technology
 
 ## Business requirements
@@ -11,11 +11,12 @@ This demo will focus on DataOps approach, so every component will be stored in [
 ## Technology used
 
 ### Desktop
-* [Atom](https://atom.io/)
+* [Atom](https://atom.io/) : Nice IDE with numerous package
 * [GitHub Desktop](https://desktop.github.com/)
 * [Terminal](https://en.wikipedia.org/wiki/Terminal_(macOS))
 * [Google Cloud SDK](https://cloud.google.com/sdk)
 * [Google Chrome](https://www.google.com/chrome/)
+* [Python 3](https://www.python.org/downloads/) : Powerful programming language, full of library
 
 ### Google Cloud Platform
 * [Cloud Storage](https://cloud.google.com/storage) :
@@ -47,10 +48,14 @@ Simple [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitte
 ## ETL with Dataproc, Dataflown, Cloud Storage and BigQuery
 TODO
 
+PS : If you prefer to avoid coding, we have fantastic option for that [Cloud Data Fusion](https://cloud.google.com/data-fusion) and [Cloud Dataprep by Trifacta](https://cloud.google.com/dataprep)
+
 ## Automatic CI / CD with Cloud Build and Stackdriver
 
 ### Continuous integration
-Goal of continuous integration is to test Data Pipeline, the simplest way to be able to trigger Data Pipeline so for this project it is done either
+Goal of continuous integration is to test Data Pipeline,
+
+, the simplest way to be able to trigger Data Pipeline so for this project it is done either
 
 ### Continuous delivery
 Goal of Continuous delivery is to automate deployment so in this demo which is the case of Data Pipeline is to be able to copy the artifact, either code (python, SQL) but also
