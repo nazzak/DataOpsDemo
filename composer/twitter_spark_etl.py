@@ -68,10 +68,19 @@ delete_ml_partition = bash_operator.BashOperator(
 )
 
 # Execute PySpark job
-run_pyspark_job = dataproc_operator.DataProcPySparkOperator(
-    task_id='run_pyspark_job',
+run_pyspark_job_splitting = dataproc_operator.DataProcPySparkOperator(
+    task_id='run_pyspark_job_splitting',
     dag=dag,
     main='gs://' + Variable.get('v_composer_bucket') + '/dags/dataproc/twitterPySparkSplitting.py',
+    cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
+    dataproc_pyspark_jars=['gs://spark-lib/bigquery/spark-bigquery-latest.jar'],
+    arguments=["--dataproc=1.4", "--job_date={{ ds }}", "--bucket=dataproc_dataops_tmp"]
+)
+
+run_pyspark_job_frequency = dataproc_operator.DataProcPySparkOperator(
+    task_id='run_pyspark_job_frequency',
+    dag=dag,
+    main='gs://' + Variable.get('v_composer_bucket') + '/dags/dataproc/twitterPySparkFrequency.py',
     cluster_name='twitter-dataproc-mlanciau-{{ ds_nodash }}',
     dataproc_pyspark_jars=['gs://spark-lib/bigquery/spark-bigquery-latest.jar'],
     arguments=["--dataproc=1.4", "--job_date={{ ds }}", "--bucket=dataproc_dataops_tmp"]
@@ -86,4 +95,5 @@ delete_dataproc_cluster = dataproc_operator.DataprocClusterDeleteOperator(
     #trigger_rule=trigger_rule.TriggerRule.ALL_DONE
 )
 
-create_dataproc_cluster >> delete_ml_partition >> run_pyspark_job >> delete_dataproc_cluster
+create_dataproc_cluster >> delete_ml_partition >> run_pyspark_job_splitting >> delete_dataproc_cluster
+create_dataproc_cluster >> run_pyspark_job_frequency >> delete_dataproc_cluster

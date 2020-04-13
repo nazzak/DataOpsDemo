@@ -24,6 +24,8 @@ steps:
   args: ['cp', 'dataflow/twitter-google-dataflow.py', 'gs://${_COMPOSER_GCS}/dags/dataflow/twitter-google-dataflow.py']
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'dataproc/twitterPySparkSplitting.py', 'gs://${_COMPOSER_GCS}/dags/dataproc/twitterPySparkSplitting.py']
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'dataproc/twitterPySparkFrequency.py', 'gs://${_COMPOSER_GCS}/dags/dataproc/twitterPySparkFrequency.py']
 - name: bash
   args: ['sleep', '20']
 #- name: gcr.io/$PROJECT_ID/airflow
