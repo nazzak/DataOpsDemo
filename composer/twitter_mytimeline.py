@@ -104,9 +104,9 @@ load_data_to_bq = bash_operator.BashOperator(
 load_data_to_pg = postgres_operator.PostgresOperator(
     task_id='load_data_to_pg',
     dag=dag,
-    sql='''SELECT {{ params.test }}''',
+    sql='INSERT INTO twitter_metadata VALUES(%s, %s, %s)',
     postgres_conn_id='postgres_dev',
-    parameters={'test':'1'}
+    parameters=('dev',datetime.now(), int(Variable.get("v_twitter_si", default_var=0)))
 )
 
 from_raw_to_sl = bigquery_operator.BigQueryOperator(
@@ -122,4 +122,5 @@ from_raw_to_sl = bigquery_operator.BigQueryOperator(
     use_legacy_sql=False
 )
 
-twitter_python >> copy_file >> [load_data_to_pg, load_data_to_bq] >> from_raw_to_sl
+twitter_python >> copy_file >> [load_data_to_pg, load_data_to_bq]
+load_data_to_bq >> from_raw_to_sl
