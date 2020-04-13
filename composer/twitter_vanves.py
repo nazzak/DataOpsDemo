@@ -88,9 +88,9 @@ copy_file = gcs_to_gcs.GoogleCloudStorageToGoogleCloudStorageOperator(
     task_id='copy_from_gcs_to_gcs',
     dag=dag,
     source_bucket='{{ var.value.v_composer_bucket }}',
-    source_object="data/vanves/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}",  # hint get the return value to the XCOM from the twitter_search_task_id
+    source_object="data/vanves/{{task_instance.xcom_pull(task_ids='twitter_vanves', key='return_value')}}",  # hint get the return value to the XCOM from the twitter_search_task_id
     destination_bucket='{{ var.value.v_twitter_temp_bucket }}',
-    destination_object="twitter/vanves/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}",
+    destination_object="twitter/vanves/{{task_instance.xcom_pull(task_ids='twitter_vanves', key='return_value')}}",
     move_object=True,
 )
 
@@ -99,7 +99,6 @@ load_data_to_bq = bash_operator.BashOperator(
     dag=dag,
     bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --replace --autodetect dataops_demo_raw_dev.t_twitter_vanves gs://{{ var.value.v_twitter_temp_bucket }}/twitter/vanves/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
 )
-
 
 from_raw_to_sl = bigquery_operator.BigQueryOperator(
     task_id='from_raw_to_sl',
