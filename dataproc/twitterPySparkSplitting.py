@@ -19,8 +19,7 @@ from pyspark.ml.feature import HashingTF, IDF, Tokenizer
 from pyspark.ml.fpm import FPGrowth
 #from pyspark.mllib.feature import Word2Vec
 #from pyspark.sql.functions import length
-from pyspark.sql.functions import col
-from pyspark.sql.functions import lit
+from pyspark.sql.functions import col, size, lit
 #from pyspark.sql.functions import to_date
 import argparse
 
@@ -75,13 +74,13 @@ model.freqItemsets.filter(size(col("items")) > 2).withColumn("c_date", lit(args.
   .mode("append") \
   .save()
 
-tokenizer = Tokenizer(inputCol="word_list", outputCol="words")
-wordsData = tokenizer.transform(tweets_words)
-hashingTF = HashingTF(inputCol="words", outputCol="rawFeatures", numFeatures=20)
-featurizedData = hashingTF.transform(wordsData)
+#tokenizer = Tokenizer(inputCol="word_list", outputCol="words")
+#wordsData = tokenizer.transform(tweets_words)
+#hashingTF = HashingTF(inputCol="words", outputCol="rawFeatures", numFeatures=20)
+#featurizedData = hashingTF.transform(wordsData)
 
-wordsData.show(40, False)
-featurizedData.show(40, False)
+#wordsData.show(40, False)
+#featurizedData.show(40, False)
 
 #overwrite faire le test
 
