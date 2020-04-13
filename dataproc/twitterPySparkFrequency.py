@@ -66,7 +66,9 @@ idf = IDF(inputCol="rawFeatures", outputCol="features")
 idfModel = idf.fit(featurizedData)
 rescaledData = idfModel.transform(featurizedData)
 
-rescaledData.select("label", "features").show(40, False)
+rescaledData.select("id", "features").show(40, False)
+
+rescaledData.show(40, False)
 
 #model.freqItemsets.filter(size(col("items")) > 2).withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
 #  .option("table","dataops_demo_ml_dev.t_twitter_google") \
