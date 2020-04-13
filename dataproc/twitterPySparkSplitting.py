@@ -15,7 +15,7 @@
 # limitations under the License.
 
 from pyspark.sql import SparkSession
-#from pyspark.mllib.feature import HashingTF, IDF
+from pyspark.ml.feature import HashingTF, IDF, Tokenizer
 from pyspark.ml.fpm import FPGrowth
 #from pyspark.mllib.feature import Word2Vec
 #from pyspark.sql.functions import length
@@ -74,6 +74,14 @@ model.freqItemsets.withColumn("c_date", lit(args.job_date).cast("date")).write.f
   .option("partitionField","c_date") \
   .mode("append") \
   .save()
+
+tokenizer = Tokenizer(inputCol="word_list", outputCol="words")
+wordsData = tokenizer.transform(tweets_words)
+hashingTF = HashingTF(inputCol="words", outputCol="rawFeatures", numFeatures=20)
+featurizedData = hashingTF.transform(wordsData)
+
+wordsData.show(40, False)
+featurizedData.show(40, False)
 
 #overwrite faire le test
 
