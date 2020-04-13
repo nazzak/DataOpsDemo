@@ -21,6 +21,7 @@ from airflow.contrib.operators import gcs_to_gcs
 #from airflow.contrib.operators import ssh_operator #sshtunnel, paramiko
 from airflow.contrib.operators import bigquery_operator
 #from airflow.contrib.operators import dataflow_operator
+from airflow.operators import postgres_operator
 from airflow.operators import bash_operator
 from datetime import datetime, timedelta
 from airflow.models import Variable
@@ -99,6 +100,15 @@ load_data_to_bq = bash_operator.BashOperator(
     bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --replace --autodetect dataops_demo_raw_dev.t_twitter_mytimeline gs://{{ var.value.v_twitter_temp_bucket }}/twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
 )
 
+# Just for demoing integration with PostgreSQL
+load_data_to_pg = postgres_operator.PostgresOperator(
+    task_id='load_data_to_pg',
+    dag=dag,
+    sql='''SELECT {{ params.test }}''',
+    postgres_conn_id='postgres_dev',
+    parameters={'test':'1'}
+)
+
 from_raw_to_sl = bigquery_operator.BigQueryOperator(
     task_id='from_raw_to_sl',
     dag=dag,
@@ -112,4 +122,4 @@ from_raw_to_sl = bigquery_operator.BigQueryOperator(
     use_legacy_sql=False
 )
 
-twitter_python >> copy_file >> load_data_to_bq >> from_raw_to_sl
+twitter_python >> copy_file >> [load_data_to_pg, load_data_to_bq] >> from_raw_to_sl
