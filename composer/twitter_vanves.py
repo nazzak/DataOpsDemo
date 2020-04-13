@@ -48,10 +48,10 @@ def twitter_vanves(**kwargs):
     access_token_key = Variable.get("v_twitter_atk")
     access_token_secret = Variable.get("v_twitter_ats")
     api = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret, access_token_key=access_token_key, access_token_secret=access_token_secret)
-    mytimeline = api.GetSearch(raw_query="q=vanves&result_type=recent&lang=fr&count=100&since_id=" + str(since_id))
-    filename = 'tweets_mytimeline_' + str(time()) + '.json'
+    twitter_search = api.GetSearch(raw_query="q=vanves&result_type=recent&lang=fr&count=100&since_id=" + str(since_id))
+    filename = 'tweets_vanves_' + str(time()) + '.json'
     with open('/home/airflow/gcs/data/vanves/' + filename, 'w+') as outfile: # hint local /home/airflow/gcs/data/ is bi-directional sync with the bucket / data
-        for tweet in mytimeline:
+        for tweet in twitter_search:
             data = {}
             data['created_at'] = tweet.created_at
             data['id_str'] = tweet.id_str
@@ -97,7 +97,7 @@ copy_file = gcs_to_gcs.GoogleCloudStorageToGoogleCloudStorageOperator(
 load_data_to_bq = bash_operator.BashOperator(
     task_id='load_data_to_bq',
     dag=dag,
-    bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --replace --autodetect dataops_demo_raw_dev.t_twitter_vanves gs://{{ var.value.v_twitter_temp_bucket }}/twitter/vanves/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
+    bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --replace --autodetect dataops_demo_raw_dev.t_twitter_vanves gs://{{ var.value.v_twitter_temp_bucket }}/twitter/vanves/{{task_instance.xcom_pull(task_ids='twitter_vanves', key='return_value')}}''',
 )
 
 from_raw_to_sl = bigquery_operator.BigQueryOperator(
