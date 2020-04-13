@@ -19,7 +19,7 @@ from pyspark.ml.feature import HashingTF, IDF, Tokenizer
 from pyspark.ml.fpm import FPGrowth
 #from pyspark.mllib.feature import Word2Vec
 #from pyspark.sql.functions import length
-#from pyspark.sql.functions import col
+from pyspark.sql.functions import col
 from pyspark.sql.functions import lit
 #from pyspark.sql.functions import to_date
 import argparse
@@ -69,7 +69,7 @@ model = fpGrowth.fit(tweets_words)
 model.freqItemsets.show(40, False)
 model.associationRules.show(20, False)
 
-model.freqItemsets.filter(len(model.freqItemsets.items) > 2).withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
+model.freqItemsets.filter(size(col("items")) > 2).withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
   .option("table","dataops_demo_ml_dev.t_twitter_google") \
   .option("partitionField","c_date") \
   .mode("append") \
