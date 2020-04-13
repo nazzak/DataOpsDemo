@@ -100,13 +100,13 @@ load_data_to_bq = bash_operator.BashOperator(
     bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --replace --autodetect dataops_demo_raw_dev.t_twitter_mytimeline gs://{{ var.value.v_twitter_temp_bucket }}/twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
 )
 
-# Just for demoing integration with PostgreSQL
+# Just for demoing integration with Cloud SQL PostgreSQL
 load_data_to_pg = postgres_operator.PostgresOperator(
     task_id='load_data_to_pg',
     dag=dag,
     sql='INSERT INTO twitter_metadata VALUES(%s, %s, %s)',
     postgres_conn_id='postgres_dev',
-    parameters=('dev',datetime.now(), int(Variable.get("v_twitter_si", default_var=0)))
+    parameters=('dev', datetime.now(), int(Variable.get("v_twitter_si", default_var=0)))
 )
 
 from_raw_to_sl = bigquery_operator.BigQueryOperator(
