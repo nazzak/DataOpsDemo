@@ -69,7 +69,7 @@ model = fpGrowth.fit(tweets_words)
 model.freqItemsets.show(40, False)
 model.associationRules.show(20, False)
 
-model.freqItemsets.withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
+model.freqItemsets.filter(len(model.freqItemsets.items) > 2).withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
   .option("table","dataops_demo_ml_dev.t_twitter_google") \
   .option("partitionField","c_date") \
   .mode("append") \
