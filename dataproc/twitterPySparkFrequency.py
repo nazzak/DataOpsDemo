@@ -49,12 +49,12 @@ t_twitter_google.printSchema()
 #t_twitter_google.show()
 
 # very basic filtering and ML, 10x way to improve it, later, also all that can be done directly on GCP with BQ so this is just for demoing integration
-tweets_words = spark.sql("SELECT id, regexp_replace(lower(text), '[^a-zA-Z0-9#@ ]+', ' ') as sentence \
+sentenceData = spark.sql("SELECT id, regexp_replace(lower(text), '[^a-zA-Z0-9#@ ]+', ' ') as sentence \
                             FROM t_twitter_google \
                             WHERE lang = 'en' AND lower(text) LIKE '%google%' \
                            ").cache()
 
-tweets_words.show(40, False)
+sentenceData.show(40, False)
 
 tokenizer = Tokenizer(inputCol="sentence", outputCol="words")
 wordsData = tokenizer.transform(sentenceData)
