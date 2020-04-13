@@ -31,4 +31,4 @@ steps:
 - name: gcr.io/cloud-builders/gcloud
   args: ['composer', 'environments', 'run', 'composer-dev', '--location', '${_COMPOSER_REGION}', 'list_dags']
 - name: gcr.io/cloud-builders/gcloud
-  args: ['composer', 'environments', 'run', 'composer-dev', '--location', '${_GCS_COMPOSER_REGION}', 'trigger_dag', '--', 'twitter_spark_etl']
+  args: ['composer', 'environments', 'run', 'composer-dev', '--location', '${_COMPOSER_REGION}', 'trigger_dag', '--', 'twitter_spark_etl']
