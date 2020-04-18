@@ -1,5 +1,5 @@
 # DataOps demo
-This repository is **in construction**, I started it while staying at home during coronavirus period, it will describe how to automate data ingestion, analytics and feedback loop via DevOps / DataOps.
+This repository is **in construction**, I started it while staying at home during coronavirus period, it will describe how to automate data ingestion, analytics and feedback loop via [DevOps](https://cloud.google.com/devops) / DataOps.
 No FinOps will be considered here, instead I will use several stack even if I don't need all of them, just to demonstrate integration between technologies
 
 ## Business requirements
@@ -71,11 +71,11 @@ Dataflow is a fantastic engine to do ETL between multiple sources and targets on
 * Choice is yours, depending on your need you can use directly
   * Cloud Function for quick action (move a file, grab data from an API, link / transform information between Pub/Sub and other Google Cloud technologies)
   * Dataproc if you prefer to use Spark or already have a huge Hadoop legacy to migrate
-  * Dataflow extraordinary distributed processing backend for Open Source [Apache Beam](https://cloud.google.com/dataflow/docs/concepts/beam-programming-model) with virtually limitless capacity 
-  * BigQuery might be the easiest and chepest way to do ETL with SQL, you just need to load your data first
+  * Dataflow extraordinary distributed processing backend for Open Source [Apache Beam](https://cloud.google.com/dataflow/docs/concepts/beam-programming-model) with virtually limitless capacity
+  * BigQuery might be the easiest and cheapest way to do ETL / ELT with SQL, you just need to load your data first
 * If you would like to avoid coding, we have fantastic options for that [Cloud Data Fusion](https://cloud.google.com/data-fusion) and [Cloud Dataprep by Trifacta](https://cloud.google.com/dataprep)
 
-## Automatic CI / CD with Cloud Build and Stackdriver
+## Automatic CI / CD with Cloud Build and Operation
 
 ### Continuous integration
 [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) aims to improve quality by running tests. For this demo, I am using Cloud Build capabilities to trigger either Cloud Function or Cloud Composer Airflow Dag (only on the dev environment).
@@ -84,3 +84,18 @@ Dataflow is a fantastic engine to do ETL between multiple sources and targets on
 Goal of [Continuous Delivery](https://en.wikipedia.org/wiki/Continuous_delivery) is to **automate deployment** once all the tests are successful. In this demo Cloud Build, will do the proper actions (initialisation, installation, creation of BigQuery Dataset, Table) in the correct environment automatically thanks to [Build Trigger](https://cloud.google.com/cloud-build/docs/running-builds/create-manage-triggers) on the **[dev|master]** branch.
 
 PS : To go further, you might have a look at [Spinnaker](https://cloud.google.com/solutions/continuous-delivery-spinnaker-kubernetes-engine)
+
+### Monitoring
+What are the basic Dashboard and alerting we need for doing DataOps :
+* Error in Cloud Composer environment
+* Error in Cloud Build
+* Performance and performance variation of all DAGs
+
+### ToDo
+[ ] Complete monitoring
+[ ] Add information about testing
+[ ] Add information about improving the speed of all steps
+[ ] Add monitoring of Business metrics / data or model quality
+[ ] Add way to initialize new environment (esp. Pre-prod and sandbox)
+[ ] Add specific data monitoring
+[ ] [Notification options to Pub/Sub](https://cloud.google.com/monitoring/support/notification-options?_ga=2.117224837.-289278821.1584538078&_gac=1.142222726.1585069485.EAIaIQobChMI4OLd-cuz6AIVSEHTCh2udgE8EAAYASAAEgJT-PD_BwE#pubsub)
