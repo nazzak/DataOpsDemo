@@ -15,8 +15,8 @@
 # limitations under the License.
 
 from pyspark.sql import SparkSession
-#from pyspark.ml.feature import HashingTF, IDF, Tokenizer
-from pyspark.ml.fpm import FPGrowth
+from pyspark.ml.feature import HashingTF, IDF, Tokenizer
+#from pyspark.ml.fpm import FPGrowth
 #from pyspark.mllib.feature import Word2Vec
 #from pyspark.sql.functions import length
 from pyspark.sql.functions import col, size, lit
@@ -49,35 +49,32 @@ t_twitter_google.printSchema()
 #t_twitter_google.show()
 
 # very basic filtering and ML, 10x way to improve it, later, also all that can be done directly on GCP with BQ so this is just for demoing integration
-tweets_words = spark.sql("SELECT id, collect_list(words) AS word_list \
-                          FROM (\
-                           SELECT id, words, COUNT(*) AS c_nbr \
-                           FROM (\
-                            SELECT id, explode(split(regexp_replace(lower(text), '[^a-zA-Z0-9#@ ]+', ' '), ' ')) as words \
-                            FROM t_twitter_google WHERE lang = 'en' AND lower(text) LIKE '%google%' \
-                           ) ssreq \
-                           WHERE length(words) > 3 AND words NOT LIKE 'http%' \
-                           GROUP BY id, words \
-                          ) ssarray \
-                          GROUP BY id").cache()
+sentenceData = spark.sql("SELECT id, regexp_replace(lower(text), '[^a-zA-Z0-9#@ ]+', ' ') as sentence \
+                            FROM t_twitter_google \
+                            WHERE lang = 'en' AND lower(text) LIKE '%google%' \
+                           ").cache()
 
-tweets_words.show(40, False)
+sentenceData.show(40, False)
 
-fpGrowth = FPGrowth(itemsCol="word_list", minSupport=0.02, minConfidence=0.02)
-model = fpGrowth.fit(tweets_words)
-model.freqItemsets.filter(size(col("items")) > 2).show(40, False)
-model.associationRules.show(20, False)
+tokenizer = Tokenizer(inputCol="sentence", outputCol="words")
+wordsData = tokenizer.transform(sentenceData)
 
-model.freqItemsets.filter(size(col("items")) > 2).withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
-  .option("table","dataops_demo_ml_dev.t_twitter_google") \
-  .option("partitionField","c_date") \
-  .mode("append") \
-  .save()
+hashingTF = HashingTF(inputCol="words", outputCol="rawFeatures", numFeatures=20)
+featurizedData = hashingTF.transform(wordsData)
 
-#tokenizer = Tokenizer(inputCol="word_list", outputCol="words")
-#wordsData = tokenizer.transform(tweets_words)
-#hashingTF = HashingTF(inputCol="words", outputCol="rawFeatures", numFeatures=20)
-#featurizedData = hashingTF.transform(wordsData)
+idf = IDF(inputCol="rawFeatures", outputCol="features")
+idfModel = idf.fit(featurizedData)
+rescaledData = idfModel.transform(featurizedData)
+
+rescaledData.select("id", "features").show(40, False)
+
+rescaledData.show(40, False)
+
+#model.freqItemsets.filter(size(col("items")) > 2).withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
+#  .option("table","dataops_demo_ml_dev.t_twitter_google") \
+#  .option("partitionField","c_date") \
+#  .mode("append") \
+#  .save()
 
 #wordsData.show(40, False)
 #featurizedData.show(40, False)

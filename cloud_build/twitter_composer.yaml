@@ -17,11 +17,15 @@ steps:
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'composer/twitter_mytimeline.py', 'gs://${_COMPOSER_GCS}/dags/twitter_mytimeline.py']
 - name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'composer/twitter_vanves.py', 'gs://${_COMPOSER_GCS}/dags/twitter_vanves.py']
+- name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'composer/twitter_spark_etl.py', 'gs://${_COMPOSER_GCS}/dags/twitter_spark_etl.py']
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'dataflow/twitter-google-dataflow.py', 'gs://${_COMPOSER_GCS}/dags/dataflow/twitter-google-dataflow.py']
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'dataproc/twitterPySparkSplitting.py', 'gs://${_COMPOSER_GCS}/dags/dataproc/twitterPySparkSplitting.py']
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'dataproc/twitterPySparkFrequency.py', 'gs://${_COMPOSER_GCS}/dags/dataproc/twitterPySparkFrequency.py']
 - name: bash
   args: ['sleep', '20']
 #- name: gcr.io/$PROJECT_ID/airflow
@@ -29,4 +33,4 @@ steps:
 - name: gcr.io/cloud-builders/gcloud
   args: ['composer', 'environments', 'run', 'composer-dev', '--location', '${_COMPOSER_REGION}', 'list_dags']
 #- name: gcr.io/cloud-builders/gcloud
-#  args: ['composer', 'environments', 'run', 'composer-dev', '--location', '${_GCS_COMPOSER_REGION}', 'trigger_dag', '--', 'twitter_search']
+#  args: ['composer', 'environments', 'run', 'composer-dev', '--location', '${_COMPOSER_REGION}', 'trigger_dag', '--', 'twitter_spark_etl']
