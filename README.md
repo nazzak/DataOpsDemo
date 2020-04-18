@@ -22,6 +22,7 @@ This demo will focus on DataOps approach, so every component will be stored in [
 * [Cloud Storage](https://cloud.google.com/storage)
 * [Cloud Firestore](https://cloud.google.com/firestore)
 * [BigQuery](https://cloud.google.com/bigquery)
+* [Cloud SQL](https://cloud.google.com/sql)
 * [Cloud Composer](https://cloud.google.com/composer)
 * [Cloud Scheduler](https://cloud.google.com/scheduler)
 * [Cloud Build](https://cloud.google.com/cloud-build)
@@ -34,6 +35,18 @@ This demo will focus on DataOps approach, so every component will be stored in [
 ## Tweets collection every minutes using Cloud Scheduler & Cloud Function
 Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/cloud_function) to collect tweets from [twitter API](https://python-twitter.readthedocs.io/en/latest/), one is scheduled every minute thanks to [Cloud Scheduler](https://cloud.google.com/scheduler), one respond to [Google Cloud Storage Triggers](https://cloud.google.com/functions/docs/calling/storage) to reroute the file to the right GCS bucket, then every day this Cloud Composer [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_google_cloud.py) loads files via [Dataflow](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) to BigQuery
 
+### More insight from the technical design
+As this is a demo, I am using more technologies than needed but what is nice here to check is :
+* [Serverless technologies](https://cloud.google.com/serverless)
+ * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
+ * Huge range of capabilities, from Storage, messaging services, functions to data analytics & Datawarehousing and Machine Learning
+ * **Pay as you go model**
+ * Several language, runtimes, frameworks, and libraries
+* Optimised pricing
+ * BigQuery will behind the scene [reduce the cost depending your usage](https://cloud.google.com/bigquery/pricing)
+ * [Aggressive pricing](https://cloud.google.com/storage/pricing#storage-pricing) for Cloud Storage with [Object Lifecycle Management](https://cloud.google.com/storage/docs/lifecycle)
+ * For each component : [Free tier](https://cloud.google.com/free) (for example for Cloud Function [first 2 million are free per month](https://cloud.google.com/functions/pricing))
+
 ## Collect your twitter timeline every hour with Cloud Composer
 Simple [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_mytimeline.py) to load your twitter timeline every hour, using some powerful features of Cloud Composer
 * Airflow [variable](https://cloud.google.com/composer/docs/concepts/cloud-storage), [XComs](https://airflow.apache.org/docs/stable/concepts.html#xcoms), [bi-directionnal folder](https://cloud.google.com/composer/docs/concepts/cloud-storage), [Macros](https://airflow.apache.org/docs/stable/macros.html)
@@ -41,10 +54,16 @@ Simple [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitte
 * [Airflow bash Operator](https://cloud.google.com/composer/docs/how-to/using/writing-dags#bashoperator) with gcloud, bq, gsutil and kubectl already installed
 * [Airflow BigQuery Operator](https://airflow.apache.org/docs/stable/integration.html#bigquery)
 
+### More insight from the technical design
+
+
 ## ETL with Dataproc, Dataflown, Cloud Storage and BigQuery
 Dataflow is a fantastic engine to do ETL between multiple sources and targets on GCP. I created a basic Pipeline [here](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) that demo how to parse JSON file from GCS, do some filtering / data preparation and then store it in BigQuery. If you prefer to use Spark or already have a huge Hadoop legacy to migrate, you can find as well a simple Dataproc job [here](https://github.com/mlanciau/DataOpsDemo/blob/master/dataproc/twitterPySparkSplitting.py) that use [Apache Spark SQL connector for Google BigQuery](https://github.com/GoogleCloudDataproc/spark-bigquery-connector).
 
-PS : If you would like to avoid coding, we have fantastic options for that [Cloud Data Fusion](https://cloud.google.com/data-fusion) and [Cloud Dataprep by Trifacta](https://cloud.google.com/dataprep)
+* Choice is yours
+ *
+ *
+* If you would like to avoid coding, we have fantastic options for that [Cloud Data Fusion](https://cloud.google.com/data-fusion) and [Cloud Dataprep by Trifacta](https://cloud.google.com/dataprep)
 
 ## Automatic CI / CD with Cloud Build and Stackdriver
 
