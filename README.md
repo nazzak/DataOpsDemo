@@ -60,7 +60,7 @@ Simple [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitte
 Cloud Composer is a fully managed airflow environment so you benefit from all those advantages :
 * Powerful capabilities of Python and Python libraries
 * [Dynamic DAG](https://medium.com/google-cloud/create-a-dynamically-created-dag-and-troubleshoot-airflows-webserver-in-google-cloud-composer-290af1e3eb1b)
-* [KubernetesPodoperator](https://cloud.google.com/composer/docs/how-to/using/using-kubernetes-pod-operator), useful if you require Custom Python dependencies or Binary dependencies that aren't available in the stock Cloud Composer worker image
+* [KubernetesPodOperator](https://cloud.google.com/composer/docs/how-to/using/using-kubernetes-pod-operator), useful if you require Custom Python dependencies or Binary dependencies that aren't available in the stock Cloud Composer worker image
 * [Airflow Operator](https://github.com/apache/airflow/tree/master/airflow/operators)
 * [Airflow contrib / community Operator](https://github.com/apache/airflow/tree/master/airflow/contrib/operators)
 
@@ -90,12 +90,14 @@ What are the basic Dashboard and alerting we need for doing DataOps :
 * Error in Cloud Composer environment
 * Error in Cloud Build
 * Performance and performance variation of all DAGs
+* Data Quality
 
 ### ToDo
-[ ] Complete monitoring
-[ ] Add information about testing
-[ ] Add information about improving the speed of all steps
-[ ] Add monitoring of Business metrics / data or model quality
-[ ] Add way to initialize new environment (esp. Pre-prod and sandbox)
-[ ] Add specific data monitoring
-[ ] [Notification options to Pub/Sub](https://cloud.google.com/monitoring/support/notification-options?_ga=2.117224837.-289278821.1584538078&_gac=1.142222726.1585069485.EAIaIQobChMI4OLd-cuz6AIVSEHTCh2udgE8EAAYASAAEgJT-PD_BwE#pubsub)
+- [ ] Complete monitoring
+- [ ] Add information about testing
+- [ ] Add information about improving the speed of all steps
+- [ ] Add monitoring of Business metrics / data or model quality
+- [ ] Add way to initialize new environment (esp. Pre-prod and sandbox)
+- [ ] Add specific data monitoring
+- [ ] [Notification options to Pub/Sub](https://cloud.google.com/monitoring/support/notification-options?_ga=2.117224837.-289278821.1584538078&_gac=1.142222726.1585069485.EAIaIQobChMI4OLd-cuz6AIVSEHTCh2udgE8EAAYASAAEgJT-PD_BwE#pubsub)
+- [ ] [Overview of logs exports](https://cloud.google.com/logging/docs/export)
