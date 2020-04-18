@@ -15,7 +15,7 @@ This demo will focus on DataOps approach, so every component will be stored in [
 * [GitHub Desktop](https://desktop.github.com/)
 * [Terminal](https://en.wikipedia.org/wiki/Terminal_(macOS))
 * [Google Cloud SDK](https://cloud.google.com/sdk)
-* [Google Chrome](https://www.google.com/chrome/)
+* [Google Chrome](https://www.google.com/chrome/) : Your favorite browser with one native excellent feature to switch between [your personnal and professional account](https://support.google.com/chrome/answer/2364824?co=GENIE.Platform%3DDesktop&hl=en) which works amazing well with GCP
 * [Python 3](https://www.python.org/downloads/) : Powerful programming language, full of library
 
 ### Google Cloud Platform
@@ -38,24 +38,30 @@ Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/c
 ### More insight from the technical design
 As this is a demo, I am using more technologies than needed but what is nice here to check is :
 * [Serverless technologies](https://cloud.google.com/serverless)
- * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
- * Huge range of capabilities, from Storage, messaging services, functions to data analytics & Datawarehousing and Machine Learning
- * **Pay as you go model**
- * Several language, runtimes, frameworks, and libraries
+   * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
+   * Huge range of capabilities, from Storage, messaging services, functions to data analytics & Datawarehousing and Machine Learning
+   * **Pay as you go model**
+   * Several language, runtimes, frameworks, and libraries
 * Optimised pricing
- * BigQuery will behind the scene [reduce the cost depending your usage](https://cloud.google.com/bigquery/pricing)
- * [Aggressive pricing](https://cloud.google.com/storage/pricing#storage-pricing) for Cloud Storage with [Object Lifecycle Management](https://cloud.google.com/storage/docs/lifecycle)
- * For each component : [Free tier](https://cloud.google.com/free) (for example for Cloud Function [first 2 million are free per month](https://cloud.google.com/functions/pricing))
+   * BigQuery will behind the scene [reduce the cost depending your usage](https://cloud.google.com/bigquery/pricing)
+   * [Aggressive pricing](https://cloud.google.com/storage/pricing#storage-pricing) for Cloud Storage with [Object Lifecycle Management](https://cloud.google.com/storage/docs/lifecycle)
+   * For each component : [Free tier](https://cloud.google.com/free) (for example for Cloud Function [first 2 million are free per month](https://cloud.google.com/functions/pricing))
 
 ## Collect your twitter timeline every hour with Cloud Composer
 Simple [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_mytimeline.py) to load your twitter timeline every hour, using some powerful features of Cloud Composer
-* Airflow [variable](https://cloud.google.com/composer/docs/concepts/cloud-storage), [XComs](https://airflow.apache.org/docs/stable/concepts.html#xcoms), [bi-directionnal folder](https://cloud.google.com/composer/docs/concepts/cloud-storage), [Macros](https://airflow.apache.org/docs/stable/macros.html)
+* Airflow [variable](https://cloud.google.com/composer/docs/concepts/cloud-storage), [XComs](https://airflow.apache.org/docs/stable/concepts.html#xcoms), [bi-directionnal folder](https://cloud.google.com/composer/docs/concepts/cloud-storage), [macros](https://airflow.apache.org/docs/stable/macros.html) and last but not least [connection](https://airflow.apache.org/docs/stable/howto/connection/index.html)
 * [Airflow python Operator](https://cloud.google.com/composer/docs/how-to/using/writing-dags#pythonoperator)
 * [Airflow bash Operator](https://cloud.google.com/composer/docs/how-to/using/writing-dags#bashoperator) with gcloud, bq, gsutil and kubectl already installed
 * [Airflow BigQuery Operator](https://airflow.apache.org/docs/stable/integration.html#bigquery)
+* [Airflow PostgreSQL Operator](https://airflow.apache.org/docs/stable/_api/airflow/operators/postgres_operator/index.html)
 
 ### More insight from the technical design
-
+Cloud Composer is a fully managed airflow environment so you benefit from all those advantages :
+* Powerful capabilities of Python and Python libraries
+* Dynamic DAG
+* Kubernetes bashoperator
+* Airflow Operator
+* Airflow community Operator
 
 ## ETL with Dataproc, Dataflown, Cloud Storage and BigQuery
 Dataflow is a fantastic engine to do ETL between multiple sources and targets on GCP. I created a basic Pipeline [here](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) that demo how to parse JSON file from GCS, do some filtering / data preparation and then store it in BigQuery. If you prefer to use Spark or already have a huge Hadoop legacy to migrate, you can find as well a simple Dataproc job [here](https://github.com/mlanciau/DataOpsDemo/blob/master/dataproc/twitterPySparkSplitting.py) that use [Apache Spark SQL connector for Google BigQuery](https://github.com/GoogleCloudDataproc/spark-bigquery-connector).
