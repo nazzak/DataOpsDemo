@@ -65,7 +65,7 @@ tweets_words.show(40, False)
 
 fpGrowth = FPGrowth(itemsCol="word_list", minSupport=0.02, minConfidence=0.02)
 model = fpGrowth.fit(tweets_words)
-model.freqItemsets.filter(size(col("items")) > 2).show(40, False)
+model.freqItemsets.filter(size(col("items")) > 2).sort(desc("freq")).show(40, False)
 model.associationRules.show(20, False)
 
 model.freqItemsets.filter(size(col("items")) > 2).withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \

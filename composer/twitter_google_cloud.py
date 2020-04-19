@@ -24,7 +24,7 @@ from airflow.contrib.operators import dataflow_operator
 from airflow.operators import bash_operator
 from datetime import datetime, timedelta
 from airflow.models import Variable
-from airflow.operators.dagrun_operator import TriggerDagRunOperator
+from airflow.operators import dagrun_operator
 #import twitter # library installed directly into the environment via the pypi tab
 #from google.cloud import storage
 import json
@@ -85,7 +85,7 @@ from_raw_to_sl = bigquery_operator.BigQueryOperator(
     use_legacy_sql=False
 )
 
-twitter_spark_etl = TriggerDagRunOperator(
+twitter_spark_etl = dagrun_operator.TriggerDagRunOperator(
     task_id="execute_other_dag",
     trigger_dag_id="twitter_spark_etl",  # Ensure this equals the dag_id of the DAG to trigger
     conf={"job_date": "{{ ds }}"},
