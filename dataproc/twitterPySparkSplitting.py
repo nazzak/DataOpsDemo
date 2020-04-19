@@ -19,7 +19,7 @@ from pyspark.sql import SparkSession
 from pyspark.ml.fpm import FPGrowth
 #from pyspark.mllib.feature import Word2Vec
 #from pyspark.sql.functions import length
-from pyspark.sql.functions import col, size, lit
+from pyspark.sql.functions import col, size, lit, desc
 #from pyspark.sql.functions import to_date
 import argparse
 
