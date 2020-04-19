@@ -74,6 +74,7 @@ dag = DAG(
     schedule_interval='0 */4 * * *',
     default_args=default_args,
     description='Load tweets about Vanves from twitter API to BQ Serving Layer',
+    catchup=False,
     dagrun_timeout=timedelta(minutes=10)
 )
 

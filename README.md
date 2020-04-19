@@ -91,9 +91,10 @@ What are the basic Dashboard and alerting we need for doing DataOps :
 * Error in Cloud Build
 * Performance and performance variation of all DAGs
 * Data Quality
+(More details soon)
 
 ## ToDo
-- [ ] Complete monitoring with Operation and log sink + BigQuery & DataStudio
+- [ ] Complete monitoring and alerting with Operation and log sink + BigQuery & DataStudio
 - [ ] Add information about testing
 - [ ] Add information about improving the speed of all steps
 - [ ] Add monitoring of Business metrics / data or model quality
@@ -103,3 +104,8 @@ What are the basic Dashboard and alerting we need for doing DataOps :
 - [ ] [Overview of logs exports](https://cloud.google.com/logging/docs/export)
 - [ ] AutoML API
 - [ ] How easy to use [Alerting Policy](https://cloud.google.com/monitoring/alerts/using-alerting-ui)
+- [ ] Add Cloud SQL Proxy just for the demo
+- [ ] Add information about data replay from Archive to Serling Layer thanks to [Airflow Backfill and Catchup](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup)
+
+## Stay safe !
+![Stay Safe](Stay_Safe.jpg)

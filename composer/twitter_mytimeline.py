@@ -74,6 +74,7 @@ dag = DAG(
     schedule_interval='@hourly',
     default_args=default_args,
     description='Load my timeline tweets from twitter API to BQ Serving Layer',
+    catchup=False,
     dagrun_timeout=timedelta(minutes=4)
 )
 
