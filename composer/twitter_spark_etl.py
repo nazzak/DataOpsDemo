@@ -35,7 +35,7 @@ default_dag_args = {
 
 dag = DAG(
     'twitter_spark_etl',
-    schedule_interval='@daily',
+    schedule_interval=None,
     default_args=default_dag_args,
     description='ETL using ephemeral Hadoop cluster',
     dagrun_timeout=timedelta(minutes=50),

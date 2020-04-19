@@ -11,11 +11,11 @@ This demo will focus on DataOps approach, so every component will be stored in [
 ## Technology used
 
 ### Desktop
-* [Atom](https://atom.io/) : Nice IDE with numerous package
+* [Atom](https://atom.io/) : Nice IDE with numerous packages
 * [GitHub Desktop](https://desktop.github.com/) : Graphical User Interface (GUI) to use Git
-* [Cloud Shell](https://cloud.google.com/shell) : Cloud Shell provides you with command-line access to your cloud resources directly from your browser with Google Cloud SDK and other utilities already installed + 5 GB of persistent disk storage
+* [Cloud Shell](https://cloud.google.com/shell) : Cloud Shell provides you command-line access to your cloud resources directly from your browser with Google Cloud SDK and other utilities already installed + 5 GB of persistent disk storage
 * [Google Cloud SDK](https://cloud.google.com/sdk) : The Cloud SDK is a set of command-line tools for developing with Google Cloud. You can use these tools to access Compute Engine, Cloud Storage, BigQuery, and other Google Cloud services directly from the command line.
-* [Google Chrome](https://www.google.com/chrome/) : Your favorite browser with one native excellent feature to switch between [your personnal and professional account](https://support.google.com/chrome/answer/2364824?co=GENIE.Platform%3DDesktop&hl=en) which works amazing well with GCP
+* [Google Chrome](https://www.google.com/chrome/) : Your favorite browser with one native excellent feature to switch between [your personnal and professional account](https://support.google.com/chrome/answer/2364824?co=GENIE.Platform%3DDesktop&hl=en) which works amazingly well with GCP
 * [Python 3](https://www.python.org/downloads/) : Powerful programming language, full of library
 
 ### Google Cloud Platform
@@ -34,17 +34,17 @@ This demo will focus on DataOps approach, so every component will be stored in [
 * [Operations](https://cloud.google.com/products/operations) : Monitor, troubleshoot, and improve infrastructure and application performance
 
 ## Tweets collection every minutes using Cloud Scheduler & Cloud Function
-Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/cloud_function) to collect tweets from [twitter API](https://python-twitter.readthedocs.io/en/latest/), one is scheduled every minute thanks to [Cloud Scheduler](https://cloud.google.com/scheduler), one respond to [Google Cloud Storage Triggers](https://cloud.google.com/functions/docs/calling/storage) to reroute the file to the right GCS bucket, then every day this Cloud Composer [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_google_cloud.py) loads files via [Dataflow](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) to BigQuery
+Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/cloud_function) to collect tweets from [twitter API](https://python-twitter.readthedocs.io/en/latest/), one is scheduled every minute thanks to [Cloud Scheduler](https://cloud.google.com/scheduler), the other responds to [Google Cloud Storage Triggers](https://cloud.google.com/functions/docs/calling/storage) to reroute the file to the right GCS bucket, then every day this Cloud Composer [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_google_cloud.py) loads files via [Dataflow](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) to BigQuery
 
 ### More insight from the technical design
 As this is a demo, I am using more technologies than needed but what is nice here to check is :
 * [Serverless technologies](https://cloud.google.com/serverless)
    * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
    * Huge range of capabilities, from Storage, messaging services, functions to data analytics & Datawarehousing and Machine Learning
-   * Several language, runtimes, frameworks, and libraries
+   * Several languages, runtimes, frameworks, and libraries
 * Optimised pricing
    * **Pay as you go model**
-   * BigQuery will behind the scene [reduce the cost depending your usage](https://cloud.google.com/bigquery/pricing)
+   * BigQuery will be behind the scene [reduce the cost depending your usage](https://cloud.google.com/bigquery/pricing)
    * [Aggressive pricing](https://cloud.google.com/storage/pricing#storage-pricing) for Cloud Storage with [Object Lifecycle Management](https://cloud.google.com/storage/docs/lifecycle)
    * [Free tier](https://cloud.google.com/free) for each component (for example for Cloud Function [first 2 million are free per month](https://cloud.google.com/functions/pricing))
 
@@ -86,14 +86,15 @@ Goal of [Continuous Delivery](https://en.wikipedia.org/wiki/Continuous_delivery)
 PS : To go further, you might have a look at [Spinnaker](https://cloud.google.com/solutions/continuous-delivery-spinnaker-kubernetes-engine)
 
 ### Monitoring
-What are the basic Dashboard and alerting we need for doing DataOps :
+What are the basic Dashboards and alerts we need for doing DataOps :
 * Error in Cloud Composer environment
 * Error in Cloud Build
 * Performance and performance variation of all DAGs
 * Data Quality
+(More details soon)
 
 ## ToDo
-- [ ] Complete monitoring with Operation and log sink + BigQuery & DataStudio
+- [ ] Complete monitoring and alerting with Operation and log sink + BigQuery & DataStudio
 - [ ] Add information about testing
 - [ ] Add information about improving the speed of all steps
 - [ ] Add monitoring of Business metrics / data or model quality
@@ -103,3 +104,9 @@ What are the basic Dashboard and alerting we need for doing DataOps :
 - [ ] [Overview of logs exports](https://cloud.google.com/logging/docs/export)
 - [ ] AutoML API
 - [ ] How easy to use [Alerting Policy](https://cloud.google.com/monitoring/alerts/using-alerting-ui)
+- [ ] Add Cloud SQL Proxy just for the demo
+- [ ] Add information about data replay from Archive to Serling Layer thanks to [Airflow Backfill and Catchup](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup)
+
+## Stay safe !
+I hope you will enjoy this demo as well as the amazing capabilities of Google Cloud Platform. Don't hesitate to [ping me](https://twitter.com/lanciaux_maxime?lang=en) if you have any question or suggestion.
+![Stay Safe](Stay_Safe.jpg)

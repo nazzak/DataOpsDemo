@@ -21,6 +21,8 @@ steps:
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'composer/twitter_spark_etl.py', 'gs://${_COMPOSER_GCS}/dags/twitter_spark_etl.py']
 - name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'composer/twitter_dataproc_worflow_template_example.py', 'gs://${_COMPOSER_GCS}/dags/twitter_dataproc_worflow_template_example.py']
+- name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'dataflow/twitter-google-dataflow.py', 'gs://${_COMPOSER_GCS}/dags/dataflow/twitter-google-dataflow.py']
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'dataproc/twitterPySparkSplitting.py', 'gs://${_COMPOSER_GCS}/dags/dataproc/twitterPySparkSplitting.py']
