@@ -49,10 +49,10 @@ t_twitter_google.printSchema()
 #t_twitter_google.show()
 
 # very basic filtering and ML, 10x way to improve it, later, also all that can be done directly on GCP with BQ so this is just for demoing integration
-sentenceData = spark.sql("SELECT id, regexp_replace(lower(text), '[^a-zA-Z0-9#@ ]+', ' ') as sentence \
+sentenceData = spark.sql("SELECT id, regexp_replace(regexp_replace(lower(text), '[^a-zA-Z0-9#@ ]+', ' '), '[ ]+', ' ') as sentence \
                             FROM t_twitter_google \
                             WHERE lang = 'en' AND lower(text) LIKE '%google%' \
-                           ").cache()
+                           ")
 
 sentenceData.show(40, False)
 
@@ -66,9 +66,9 @@ idf = IDF(inputCol="rawFeatures", outputCol="features")
 idfModel = idf.fit(featurizedData)
 rescaledData = idfModel.transform(featurizedData)
 
-rescaledData.select("id", "features").show(40, False)
+#rescaledData.select("id", "features").show(40, False)
 
-rescaledData.show(40, False)
+rescaledData.filter(size(col("words")) > 2).show(60, False)
 
 #model.freqItemsets.filter(size(col("items")) > 2).withColumn("c_date", lit(args.job_date).cast("date")).write.format("bigquery") \
 #  .option("table","dataops_demo_ml_dev.t_twitter_google") \
