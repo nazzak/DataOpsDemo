@@ -73,7 +73,7 @@ workflow_templates_cluster_choice = bash_operator.BashOperator(
       --zone europe-west1-b'''
 )
 
-workflow_templates_instantiate = bash_operator.BashOperator(
+workflow_templates_add_py_spark = bash_operator.BashOperator(
     task_id='workflow_templates_add_py_spark',
     dag=dag,
     bash_command='''bucket_name="europe-west6-composer-dev-c353e422-bucket"
@@ -92,4 +92,4 @@ workflow_templates_instantiate = bash_operator.BashOperator(
     bash_command='''gcloud dataproc workflow-templates instantiate template-id-test --region=europe-west1'''
 )
 
-workflow_templates_delete >> workflow_templates_create >> workflow_templates_cluster_choice >> workflow_templates_instantiate
+workflow_templates_delete >> workflow_templates_create >> workflow_templates_cluster_choice >> workflow_templates_add_py_spark >> workflow_templates_instantiate
