@@ -108,6 +108,5 @@ What are the basic Dashboard and alerting we need for doing DataOps :
 - [ ] Add information about data replay from Archive to Serling Layer thanks to [Airflow Backfill and Catchup](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup)
 
 ## Stay safe !
-I hope you will enjoy this demo as well as the amazing capabilities of Google Cloud Platform
-Don't hesitate to [ping me](https://twitter.com/lanciaux_maxime?lang=en) if you have any question or suggestion
+I hope you will enjoy this demo as well as the amazing capabilities of Google Cloud Platform. Don't hesitate to [ping me](https://twitter.com/lanciaux_maxime?lang=en) if you have any question or suggestion.
 ![Stay Safe](Stay_Safe.jpg)
