@@ -78,13 +78,12 @@ workflow_templates_add_py_spark = bash_operator.BashOperator(
     task_id='workflow_templates_add_py_spark',
     dag=dag,
     bash_command='''bucket_name="europe-west6-composer-dev-c353e422-bucket" \
-      d={{ ds }} \
       gcloud dataproc workflow-templates add-job pyspark gs://${bucket_name}/dags/dataproc/twitterPySparkSplitting.py \
-        --step-id pyspark-template-${d} \
+        --step-id pyspark-template-{{ ds }} \
         --workflow-template template-id-test \
         --jars gs://spark-lib/bigquery/spark-bigquery-latest.jar \
         --region europe-west1 \
-        -- --job_date=$d --dataproc=1.4 --bucket=dataproc_dataops_tmp'''
+        -- --job_date={{ ds }} --dataproc=1.4 --bucket=dataproc_dataops_tmp'''
 )
 
 workflow_templates_instantiate = bash_operator.BashOperator(
