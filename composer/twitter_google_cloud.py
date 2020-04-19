@@ -88,7 +88,8 @@ from_raw_to_sl = bigquery_operator.BigQueryOperator(
 twitter_spark_etl = dagrun_operator.TriggerDagRunOperator(
     task_id="execute_other_dag",
     trigger_dag_id="twitter_spark_etl",  # Ensure this equals the dag_id of the DAG to trigger
-    conf={"job_date": "{{ ds }}"},
+    conf={"job_date": "{{ ds }}"}, # No need for this parameter
+    execution_date="{{ ds }}",
     dag=dag,
 )
 
