@@ -64,25 +64,25 @@ workflow_templates_create = bash_operator.BashOperator(
 workflow_templates_cluster_choice = bash_operator.BashOperator(
     task_id='workflow_templates_cluster_choice',
     dag=dag,
-    bash_command='''gcloud dataproc workflow-templates set-managed-cluster template-id-test --master-machine-type n1-standard-4
-      --worker-machine-type n1-standard-2
-      --num-workers 2
-      --cluster-name template-id-test-cluster
-      --num-masters=1
-      --region europe-west1
+    bash_command='''gcloud dataproc workflow-templates set-managed-cluster template-id-test --master-machine-type n1-standard-4 \
+      --worker-machine-type n1-standard-2 \
+      --num-workers 2 \
+      --cluster-name template-id-test-cluster \
+      --num-masters=1 \
+      --region europe-west1 \
       --zone europe-west1-b'''
 )
 
 workflow_templates_add_py_spark = bash_operator.BashOperator(
     task_id='workflow_templates_add_py_spark',
     dag=dag,
-    bash_command='''bucket_name="europe-west6-composer-dev-c353e422-bucket"
-      d=2020-03-15
-      gcloud dataproc workflow-templates add-job pyspark gs://${bucket_name}/dags/dataproc/twitterPySparkSplitting.py
-        --step-id pyspark-template-$d
-        --workflow-template template-id-test
-        --jars gs://spark-lib/bigquery/spark-bigquery-latest.jar
-        --region europe-west1
+    bash_command='''bucket_name="europe-west6-composer-dev-c353e422-bucket" \
+      d=2020-03-15 \
+      gcloud dataproc workflow-templates add-job pyspark gs://${bucket_name}/dags/dataproc/twitterPySparkSplitting.py \
+        --step-id pyspark-template-$d \
+        --workflow-template template-id-test \
+        --jars gs://spark-lib/bigquery/spark-bigquery-latest.jar \
+        --region europe-west1 \
         -- --job_date=$d --dataproc=1.4 --bucket=dataproc_dataops_tmp'''
 )
 
