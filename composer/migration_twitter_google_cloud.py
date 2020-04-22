@@ -42,7 +42,7 @@ default_args = {
 }
 
 dag = DAG(
-    'twitter_search',
+    'migration_twitter_search_01',
     default_args=default_args,
     description='Migration with data replay with BigQuery Schema change',
     schedule_interval=None,
@@ -86,12 +86,12 @@ from_raw_to_sl = bigquery_operator.BigQueryOperator(
     use_legacy_sql=False
 )
 
-twitter_spark_etl = dagrun_operator.TriggerDagRunOperator(
-    task_id="execute_other_dag",
-    trigger_dag_id="twitter_spark_etl",  # Ensure this equals the dag_id of the DAG to trigger
-    conf={"job_date": "{{ ds }}"}, # No need for this parameter, please check execution_date
-    execution_date="{{ ds }}",
-    dag=dag,
-)
+#twitter_spark_etl = dagrun_operator.TriggerDagRunOperator(
+#    task_id="execute_other_dag",
+#    trigger_dag_id="twitter_spark_etl",  # Ensure this equals the dag_id of the DAG to trigger
+#    conf={"job_date": "{{ ds }}"}, # No need for this parameter, please check execution_date
+#    execution_date="{{ ds }}",
+#    dag=dag,
+#)
 
-load_raw_data >> delete_sl_partition >> from_raw_to_sl >> twitter_spark_etl
+delete_sl_partition >> from_raw_to_sl
