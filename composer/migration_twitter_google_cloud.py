@@ -49,11 +49,14 @@ def bigquery_schema_update(**kwargs):
     new_column_name = "source"
     original_schema = table.schema
     new_schema = original_schema[:]
-    if new_column_name not in new_schema:
-        new_schema.append(bigquery.SchemaField(new_column_name, "STRING"))
-        table.schema = new_schema
-        table = client.update_table(table, ["schema"])
-    return(new_column_name) # hint push the return value to the XCOM
+    print(new_schema)
+    for field in new_schema:
+        if field.name == new_column_name:
+            return(False)
+    new_schema.append(bigquery.SchemaField(new_column_name, "STRING"))
+    table.schema = new_schema
+    table = client.update_table(table, ["schema"])
+    return(True) # hint push the return value to the XCOM
 
 dag = DAG(
     'migration_twitter_search_01',
