@@ -41,6 +41,7 @@ default_args = {
     'email_on_retry': False
 }
 
+# hint in this code we don't keep the raw data so we can't replay here
 def twitter_mytimeline(**kwargs):
     since_id = int(Variable.get("v_twitter_si", default_var=0)) # getting value from Variable
     consumer_key = Variable.get("v_twitter_ck")
