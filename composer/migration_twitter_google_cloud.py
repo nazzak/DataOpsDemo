@@ -81,7 +81,7 @@ delete_sl_partition = bash_operator.BashOperator(
     bash_command='''bq rm -f -t 'dataops_demo_sl_dev.t_twitter_google${{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m%d") }}' ''',
 )
 
-# We can of course think of something way more complex
+# We can of course think of something way more complex, here we are taking advantage of the json fiel so no need to reload everything
 from_raw_to_sl = bigquery_operator.BigQueryOperator(
     task_id='from_raw_to_sl',
     dag=dag,

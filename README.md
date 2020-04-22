@@ -38,9 +38,9 @@ Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/c
 
 ### More insight from the technical design
 As this is a demo, I am using more technologies than needed but what is nice here to check is :
-* On this pipeline, I am storing data into GCS as soon as I receive it, the goal is to be able to reprocess the data if needed, in that regards
-  * Data replay can be directly done thanks to native [Composer / Airflow](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup) capabilities (ie : click on / delete the dag and then wait / copy it again to the DAG folder)
-  * For specific schema change, you will need to create a dedicated DAG (good practice is to follow naming convention like migration-...) and then play it once (so scheduling at None) and this can be automatic via Cloud Build
+* In this pipeline, data is stored in GCS before being load to BQ, so it is easier to handle schema change if needed. Data replay can be done several ways :
+  * Directly done thanks to native [Composer / Airflow](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup) capabilities (ie : click on / Delete the dag and then wait / copy it again to the DAG folder)
+  * Or via the creation of a dedicated DAG (good practice is to follow naming convention like migration-...) and then play it once (so scheduling at None) and this can be automatic via Cloud Build
   and schema migration, on this pipeline
 * [Serverless technologies](https://cloud.google.com/serverless)
   * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
