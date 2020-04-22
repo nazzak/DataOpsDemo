@@ -39,9 +39,8 @@ Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/c
 ### More insight from the technical design
 As this is a demo, I am using more technologies than needed but what is nice here to check is :
 * In this pipeline, data is stored in GCS before being load to BQ, so it is easier to handle schema change if needed. Data replay can be done several ways :
-  * Directly done thanks to native [Composer / Airflow](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup) capabilities (ie : click on / Delete the dag and then wait / copy it again to the DAG folder)
-  * Or via the creation of a dedicated DAG (good practice is to follow naming convention like migration-...) and then play it once (so scheduling at None) and this can be automatic via Cloud Build
-  and schema migration, on this pipeline
+  * Directly thanks to native [Composer / Airflow](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup) capabilities (ie : click on / Delete the dag and then wait / copy it again to the DAG folder)
+  * Or via the creation of a dedicated DAG (good practice is to follow naming convention like migration-...) and then play it once (with end_date)
 * [Serverless technologies](https://cloud.google.com/serverless)
   * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
   * Huge range of capabilities, from Storage, messaging services, functions to data analytics & Datawarehousing and Machine Learning
@@ -98,7 +97,7 @@ What are the basic Dashboards and alerts we need for doing DataOps :
 (More details soon)
 
 ## ToDo
-- [ ] Add data migration / Schema change
+- [x] Add data migration / Schema change
 - [ ] Complete monitoring and alerting with Operation and log sink + BigQuery & DataStudio
 - [ ] Add information about testing
 - [ ] Add information about improving the speed of all steps
