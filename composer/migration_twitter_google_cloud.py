@@ -33,6 +33,7 @@ import os
 
 default_args = {
     'start_date': datetime(2020, 3, 15),
+    'end_date': datetime(2020, 4, 22),
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
     'depends_on_past': False,
@@ -45,7 +46,7 @@ dag = DAG(
     'migration_twitter_search_01',
     default_args=default_args,
     description='Migration with data replay with BigQuery Schema change',
-    schedule_interval=None,
+    schedule_interval='@daily',
     dagrun_timeout=timedelta(minutes=30)
 )
 
