@@ -44,20 +44,20 @@ default_args = {
 dag = DAG(
     'twitter_search',
     default_args=default_args,
-    description='Load data from GCS to BQ Serving Layer',
-    schedule_interval='@daily',
+    description='Migration with data replay with BigQuery Schema change',
+    schedule_interval=None,
     dagrun_timeout=timedelta(minutes=30)
 )
 
-load_raw_data = dataflow_operator.DataFlowPythonOperator(
-    task_id='load_raw_data',
-    dag=dag,
-    py_file='/home/airflow/gcs/dags/dataflow/twitter-google-dataflow.py',
+#load_raw_data = dataflow_operator.DataFlowPythonOperator(
+#    task_id='load_raw_data',
+#    dag=dag,
+#    py_file='/home/airflow/gcs/dags/dataflow/twitter-google-dataflow.py',
     #py_file='dataflow/twitter-google-dataflow.py',
-    job_name='twitter-google-dataflow-{{ ds }}',
-    dataflow_default_options={'project':os.environ.get('GCP_PROJECT'), 'region': 'europe-west1','zone':'europe-west6-a','runner':'DataflowRunner'},
-    options={'job_date':'{{ ds }}', 'twitter_bucket':os.environ.get('TWITTER_BUCKET'), 'dataflow_bucket':os.environ.get('DATAFLOW_BUCKET')}
-)
+#    job_name='twitter-google-dataflow-{{ ds }}',
+#    dataflow_default_options={'project':os.environ.get('GCP_PROJECT'), 'region': 'europe-west1','zone':'europe-west6-a','runner':'DataflowRunner'},
+#    options={'job_date':'{{ ds }}', 'twitter_bucket':os.environ.get('TWITTER_BUCKET'), 'dataflow_bucket':os.environ.get('DATAFLOW_BUCKET')}
+#)
 
 #delete_sl_partition = bigquery_operator.BigQueryOperator( # TODO change to bq command line
 #    task_id='delete_sl_partition',
@@ -72,6 +72,7 @@ delete_sl_partition = bash_operator.BashOperator(
     bash_command='''bq rm -f -t 'dataops_demo_sl_dev.t_twitter_google${{ macros.ds_format(ds, "%Y-%m-%d", "%Y%m%d") }}' ''',
 )
 
+# We can of course think of something way more complex
 from_raw_to_sl = bigquery_operator.BigQueryOperator(
     task_id='from_raw_to_sl',
     dag=dag,

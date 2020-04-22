@@ -28,6 +28,9 @@ steps:
   args: ['cp', 'dataproc/twitterPySparkSplitting.py', 'gs://${_COMPOSER_GCS}/dags/dataproc/twitterPySparkSplitting.py']
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', 'dataproc/twitterPySparkFrequency.py', 'gs://${_COMPOSER_GCS}/dags/dataproc/twitterPySparkFrequency.py']
+# Migration
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'composer/migration_twitter_google_cloud.py', 'gs://${_COMPOSER_GCS}/dags/migration_twitter_google_cloud.py']
 - name: bash
   args: ['sleep', '20']
 #- name: gcr.io/$PROJECT_ID/airflow

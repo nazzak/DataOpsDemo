@@ -38,15 +38,19 @@ Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/c
 
 ### More insight from the technical design
 As this is a demo, I am using more technologies than needed but what is nice here to check is :
+* On this pipeline, I am storing data into GCS as soon as I receive it, the goal is to be able to reprocess the data if needed, in that regards
+  * Data replay can be directly done thanks to native [Composer / Airflow](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup) capabilities (ie : click on / delete the dag and then wait / copy it again to the DAG folder)
+  * For specific schema change, you will need to create a dedicated DAG (good practice is to follow naming convention like migration-...) and then play it once (so scheduling at None) and this can be automatic via Cloud Build
+  and schema migration, on this pipeline
 * [Serverless technologies](https://cloud.google.com/serverless)
-   * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
-   * Huge range of capabilities, from Storage, messaging services, functions to data analytics & Datawarehousing and Machine Learning
-   * Several languages, runtimes, frameworks, and libraries
+  * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
+  * Huge range of capabilities, from Storage, messaging services, functions to data analytics & Datawarehousing and Machine Learning
+  * Several languages, runtimes, frameworks, and libraries
 * Optimised pricing
-   * **Pay as you go model**
-   * BigQuery will be behind the scene [reduce the cost depending your usage](https://cloud.google.com/bigquery/pricing)
-   * [Aggressive pricing](https://cloud.google.com/storage/pricing#storage-pricing) for Cloud Storage with [Object Lifecycle Management](https://cloud.google.com/storage/docs/lifecycle)
-   * [Free tier](https://cloud.google.com/free) for each component (for example for Cloud Function [first 2 million are free per month](https://cloud.google.com/functions/pricing))
+  * **Pay as you go model**
+  * BigQuery will be behind the scene [reduce the cost depending your usage](https://cloud.google.com/bigquery/pricing)
+  * [Aggressive pricing](https://cloud.google.com/storage/pricing#storage-pricing) for Cloud Storage with [Object Lifecycle Management](https://cloud.google.com/storage/docs/lifecycle)
+  * [Free tier](https://cloud.google.com/free) for each component (for example for Cloud Function [first 2 million are free per month](https://cloud.google.com/functions/pricing))
 
 ## Collect your twitter timeline every hour with Cloud Composer
 Simple [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_mytimeline.py) to load your twitter timeline every hour, using some powerful features of Cloud Composer
