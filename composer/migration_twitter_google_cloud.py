@@ -47,7 +47,8 @@ dag = DAG(
     default_args=default_args,
     description='Migration with data replay with BigQuery Schema change',
     schedule_interval='@daily',
-    dagrun_timeout=timedelta(minutes=30)
+    dagrun_timeout=timedelta(minutes=30),
+    max_active_runs=1
 )
 
 #load_raw_data = dataflow_operator.DataFlowPythonOperator(
@@ -77,7 +78,7 @@ delete_sl_partition = bash_operator.BashOperator(
 from_raw_to_sl = bigquery_operator.BigQueryOperator(
     task_id='from_raw_to_sl',
     dag=dag,
-    sql='''SELECT PARSE_TIMESTAMP('%a %b %d %H:%M:%S +0000 %E4Y', created_at) AS c_timestamp, CAST(PARSE_TIMESTAMP('%a %b %d %H:%M:%S +0000 %E4Y', created_at) AS date) as c_created, id, user_id, user_name, lang, user_screen_name, text, source
+    sql='''SELECT PARSE_TIMESTAMP('%a %b %d %H:%M:%S +0000 %E4Y', created_at) AS c_timestamp, CAST(PARSE_TIMESTAMP('%a %b %d %H:%M:%S +0000 %E4Y', created_at) AS date) as c_created, id, user_id, user_name, lang, user_screen_name, text, JSON_EXTRACT(json, '$.source') AS source
         FROM dataops_demo_raw_dev.t_twitter_google_{{ macros.ds_format(ds, "%Y-%m-%d", "%Y_%m_%d") }}''',
     destination_dataset_table='dataops_demo_sl_dev.t_twitter_google',
     write_disposition='WRITE_APPEND',
