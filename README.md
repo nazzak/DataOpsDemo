@@ -94,6 +94,7 @@ What are the basic Dashboards and alerts we need for doing DataOps :
 (More details soon)
 
 ## ToDo
+- [ ] Add data migration / Schema change
 - [ ] Complete monitoring and alerting with Operation and log sink + BigQuery & DataStudio
 - [ ] Add information about testing
 - [ ] Add information about improving the speed of all steps
@@ -106,6 +107,7 @@ What are the basic Dashboards and alerts we need for doing DataOps :
 - [ ] How easy to use [Alerting Policy](https://cloud.google.com/monitoring/alerts/using-alerting-ui)
 - [ ] Add Cloud SQL Proxy just for the demo
 - [ ] Add information about data replay from Archive to Serling Layer thanks to [Airflow Backfill and Catchup](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup)
+- [ ] Add Data Catalog
 
 ## Stay safe !
 I hope you will enjoy this demo as well as the amazing capabilities of Google Cloud Platform. Don't hesitate to [ping me](https://twitter.com/lanciaux_maxime?lang=en) if you have any question or suggestion.
