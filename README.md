@@ -40,7 +40,7 @@ Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/c
 As this is a demo, I am using more technologies than needed but what is nice here to check is :
 * In this pipeline, data is stored in GCS before being load to BQ, so it is easier to handle schema change if needed. Data replay can be done several ways :
   * Directly thanks to native [Composer / Airflow](https://airflow.apache.org/docs/stable/scheduler.html#backfill-and-catchup) capabilities (ie : click on / Delete the dag and then wait / copy it again to the DAG folder)
-  * Or via the creation of a dedicated DAG (good practice is to follow naming convention like migration-...) and then play it once (with end_date)
+  * Or via the creation of a [dedicated DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/migration_twitter_google_cloud.py) (good practice is to follow naming convention like migration-...) and then play it once (with end_date)
 * [Serverless technologies](https://cloud.google.com/serverless)
   * No need to worry about underlying infrastructure (provisioning, **scaling**, performance)
   * Huge range of capabilities, from Storage, messaging services, functions to data analytics & Datawarehousing and Machine Learning
