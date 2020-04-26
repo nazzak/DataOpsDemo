@@ -1,0 +1,6 @@
+# Function dependencies, for example:
+# package>=version
+python-twitter
+google-cloud-storage
+google-cloud-datastore
+pymongo

@@ -25,11 +25,13 @@ from airflow.operators import postgres_operator
 from airflow.operators import bash_operator
 from datetime import datetime, timedelta
 from airflow.models import Variable
-import twitter # library installed directly into the environment via the pypi tab
+import twitter # library installed directly via the pypi Composer tab
+import pymongo # library installed directly via the pypi Composer tab
 #from google.cloud import storage
 import json
 from time import time
 import os
+import logging
 
 default_args = {
     'start_date': datetime(2020, 3, 29, 13),
@@ -70,6 +72,14 @@ def twitter_mytimeline(**kwargs):
     Variable.set("v_twitter_si", since_id)
     return(filename) # hint push the return value to the XCOM
 
+def load_data_to_mongoDB(**kwargs):
+    mongodb_user = Variable.get("v_mongodb_user")
+    mongodb_password = Variable.get("v_mongodb_passwd")
+    print(mongodb_password)
+    client = pymongo.MongoClient(f"mongodb://{mongodb_user}:{mongodb_password}@mlanciau-demo-shard-00-00-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-01-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-02-6qiwr.gcp.mongodb.net:27017/test?ssl=true&replicaSet=mlanciau-demo-shard-0&authSource=admin&retryWrites=true&w=majority")
+    db = client.db_twitter
+    return True
+
 dag = DAG(
     'twitter_mytimeline',
     schedule_interval='@hourly',
@@ -102,8 +112,15 @@ load_data_to_bq = bash_operator.BashOperator(
     bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --replace --autodetect dataops_demo_raw_dev.t_twitter_mytimeline gs://{{ var.value.v_twitter_temp_bucket }}/twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
 )
 
-# Just for demoing integration with Cloud SQL PostgreSQL
-load_data_to_pg = postgres_operator.PostgresOperator(
+load_data_to_mongoDB = python_operator.PythonOperator(
+    task_id='load_data_to_mongoDB',
+    dag=dag,
+    python_callable=load_data_to_mongoDB,
+    provide_context=True
+)
+
+# Demoing integration with Cloud SQL PostgreSQL
+load_metadata_to_pg = postgres_operator.PostgresOperator(
     task_id='load_data_to_pg',
     dag=dag,
     sql='INSERT INTO twitter_metadata VALUES(%s, %s, %s)',
@@ -124,5 +141,5 @@ from_raw_to_sl = bigquery_operator.BigQueryOperator(
     use_legacy_sql=False
 )
 
-twitter_python >> copy_file >> [load_data_to_pg, load_data_to_bq]
+twitter_python >> copy_file >> [load_metadata_to_pg, load_data_to_bq, load_data_to_mongoDB]
 load_data_to_bq >> from_raw_to_sl
