@@ -72,6 +72,7 @@ def twitter_mytimeline(**kwargs):
     Variable.set("v_twitter_si", since_id)
     return(filename) # hint push the return value to the XCOM
 
+# Demoing integration with MongoDB Atlas
 def load_data_to_mongoDB(**kwargs):
     ti = kwargs['ti']
     filename = ti.xcom_pull(task_ids='twitter_mytimeline')
@@ -80,12 +81,12 @@ def load_data_to_mongoDB(**kwargs):
     client = pymongo.MongoClient(f"mongodb://{mongodb_user}:{mongodb_password}@mlanciau-demo-shard-00-00-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-01-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-02-6qiwr.gcp.mongodb.net:27017/db_twitter?ssl=true&replicaSet=mlanciau-demo-shard-0&authSource=admin&retryWrites=true&w=majority")
     db = client.db_twitter
     collection = db.mytimeline
-    count = 0 # Possible to use readlines() here
+    count = 0 # possible to use readlines() here
     with open(f"/home/airflow/gcs/data/mytimeline/{filename}") as infile:
         for line in infile:
             count += 1
             data = json.loads(line)
-            collection.insert_one(data)
+            collection.insert_one(data) # possible to user insert_many() here
     return(count)
 
 dag = DAG(
@@ -120,6 +121,7 @@ load_data_to_bq = bash_operator.BashOperator(
     bash_command='''bq load --source_format=NEWLINE_DELIMITED_JSON --replace --autodetect dataops_demo_raw_dev.t_twitter_mytimeline gs://{{ var.value.v_twitter_temp_bucket }}/twitter/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}''',
 )
 
+# Demoing integration with MongoDB Atlas
 load_data_to_mongoDB = python_operator.PythonOperator(
     task_id='load_data_to_mongoDB',
     dag=dag,
