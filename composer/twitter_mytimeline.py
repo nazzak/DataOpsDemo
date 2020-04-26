@@ -86,7 +86,7 @@ def load_data_to_mongoDB(**kwargs):
             count += 1
             data = json.loads(line)
             collection.insert_one(data)
-    return True
+    return(count)
 
 dag = DAG(
     'twitter_mytimeline',
