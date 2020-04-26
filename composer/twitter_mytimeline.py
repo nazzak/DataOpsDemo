@@ -82,7 +82,7 @@ def load_data_to_mongoDB(**kwargs):
     with open("/home/airflow/gcs/data/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}") as infile:
         for line in infile:
             count += 1
-            data = json.read(line)
+            data = json.loads(line)
             collection.insert_one(data)
     return True
 
