@@ -80,7 +80,7 @@ def load_data_to_mongoDB(**kwargs):
     client = pymongo.MongoClient(f"mongodb://{mongodb_user}:{mongodb_password}@mlanciau-demo-shard-00-00-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-01-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-02-6qiwr.gcp.mongodb.net:27017/test?ssl=true&replicaSet=mlanciau-demo-shard-0&authSource=admin&retryWrites=true&w=majority")
     db = client.db_twitter
     collection = db.mytimeline
-    count = 0
+    count = 0 # Possible to use readlines() here
     with open(f"/home/airflow/gcs/data/mytimeline/{filename}") as infile:
         for line in infile:
             count += 1
@@ -149,5 +149,5 @@ from_raw_to_sl = bigquery_operator.BigQueryOperator(
     use_legacy_sql=False
 )
 
-twitter_python >> copy_file >> [load_metadata_to_pg, load_data_to_bq, load_data_to_mongoDB]
+twitter_python >> load_data_to_mongoDB >> copy_file >> [load_metadata_to_pg, load_data_to_bq]
 load_data_to_bq >> from_raw_to_sl
