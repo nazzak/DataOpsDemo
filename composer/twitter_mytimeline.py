@@ -74,10 +74,16 @@ def twitter_mytimeline(**kwargs):
 
 def load_data_to_mongoDB(**kwargs):
     mongodb_user = Variable.get("v_mongodb_user")
-    mongodb_password = Variable.get("v_mongodb_passwd")
-    print(mongodb_password)
+    mongodb_password = Variable.get("v_mongodb_password")
     client = pymongo.MongoClient(f"mongodb://{mongodb_user}:{mongodb_password}@mlanciau-demo-shard-00-00-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-01-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-02-6qiwr.gcp.mongodb.net:27017/test?ssl=true&replicaSet=mlanciau-demo-shard-0&authSource=admin&retryWrites=true&w=majority")
     db = client.db_twitter
+    collection = db.mytimeline
+    count = 0
+    with open("/home/airflow/gcs/data/mytimeline/{{task_instance.xcom_pull(task_ids='twitter_mytimeline', key='return_value')}}") as infile:
+        for line in infile:
+            count += 1
+            data = json.read(line)
+            collection.insert_one(data)
     return True
 
 dag = DAG(
