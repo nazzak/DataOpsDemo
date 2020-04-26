@@ -77,7 +77,7 @@ def load_data_to_mongoDB(**kwargs):
     filename = ti.xcom_pull(task_ids='twitter_mytimeline')
     mongodb_user = Variable.get("v_mongodb_user")
     mongodb_password = Variable.get("v_mongodb_password")
-    client = pymongo.MongoClient(f"mongodb://{mongodb_user}:{mongodb_password}@mlanciau-demo-shard-00-00-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-01-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-02-6qiwr.gcp.mongodb.net:27017/test?ssl=true&replicaSet=mlanciau-demo-shard-0&authSource=admin&retryWrites=true&w=majority")
+    client = pymongo.MongoClient(f"mongodb://{mongodb_user}:{mongodb_password}@mlanciau-demo-shard-00-00-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-01-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-02-6qiwr.gcp.mongodb.net:27017/db_twitter?ssl=true&replicaSet=mlanciau-demo-shard-0&authSource=admin&retryWrites=true&w=majority")
     db = client.db_twitter
     collection = db.mytimeline
     count = 0 # Possible to use readlines() here
