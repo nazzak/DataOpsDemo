@@ -29,8 +29,8 @@ def count_tweet_from_mongoDB(event, context):
     pubsub_message = base64.b64decode(event['data']).decode('utf-8')
     if pubsub_message != 'hour':
         return(0)
-    mongodb_user = 'mlanciauAdmin' # getenv('mongodb_user')
-    mongodb_password = '6NKePkfk90GTKq6I' # getenv('mongodb_password')
+    mongodb_user = getenv('mongodb_user')
+    mongodb_password = getenv('mongodb_password')
     client = pymongo.MongoClient(f'mongodb://{mongodb_user}:{mongodb_password}@mlanciau-demo-shard-00-00-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-01-6qiwr.gcp.mongodb.net:27017,mlanciau-demo-shard-00-02-6qiwr.gcp.mongodb.net:27017/db_twitter?ssl=true&replicaSet=mlanciau-demo-shard-0&authSource=admin&retryWrites=true&w=majority')
     db = client.db_twitter
     collection = db.mytimeline
