@@ -36,7 +36,7 @@ def count_tweet_from_mongoDB(event, context):
     collection = db.mytimeline
     count = 0
     d = datetime.now() - timedelta(minutes=240)
-    count = collection.count_documents({"date": {"$lt": d}})
+    count = collection.count_documents({"created_at": {"$lt": d}})
     print(f'I just read {count} from MongoDB Atlas from the last 4 hours')
 
 #count_tweet_from_mongoDB(None, None)

@@ -32,6 +32,7 @@ import json
 from time import time
 import os
 import logging
+from datetime import datetime
 
 default_args = {
     'start_date': datetime(2020, 3, 29, 13),
@@ -86,6 +87,7 @@ def load_data_to_mongoDB(**kwargs):
         for line in infile:
             count += 1
             data = json.loads(line)
+            data['created_at'] = datetime.strptime(data['created_at'], '%a %b %d %H:%M:%S %z %Y')
             collection.insert_one(data) # possible to user insert_many() here
     return(count)
 
