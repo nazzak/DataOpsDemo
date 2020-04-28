@@ -34,6 +34,7 @@ This demo will focus on DataOps approach, so every component will be stored in [
 * [Operations](https://cloud.google.com/products/operations) : Monitor, troubleshoot, and improve infrastructure and application performance
 
 ## Tweets collection every minutes using Cloud Scheduler & Cloud Function
+![Serverless_flow_1.png](img/Serverless_flow_1.png)
 Two basic [Cloud Function](https://github.com/mlanciau/DataOpsDemo/tree/master/cloud_function) to collect tweets from [twitter API](https://python-twitter.readthedocs.io/en/latest/), one is scheduled every minute thanks to [Cloud Scheduler](https://cloud.google.com/scheduler), the other responds to [Google Cloud Storage Triggers](https://cloud.google.com/functions/docs/calling/storage) to reroute the file to the right GCS bucket, then every day this Cloud Composer [DAG](https://github.com/mlanciau/DataOpsDemo/blob/master/composer/twitter_google_cloud.py) loads files via [Dataflow](https://github.com/mlanciau/DataOpsDemo/blob/master/dataflow/twitter-google-dataflow.py) to BigQuery
 
 ### More insight from the technical design
@@ -115,4 +116,4 @@ What are the basic Dashboards and alerts we need for doing DataOps :
 
 ## Stay safe !
 I hope you will enjoy this demo as well as the amazing capabilities of Google Cloud Platform. Don't hesitate to [ping me](https://twitter.com/lanciaux_maxime?lang=en) if you have any question or suggestion.
-![Stay Safe](Stay_Safe.jpg)
+![Stay Safe](img/Stay_Safe.jpg)
